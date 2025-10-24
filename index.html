@@ -36,7 +36,7 @@
         button:hover { 
             background-color: #e0e0e0; 
         }
-        select { 
+        select, input[type="time"] { 
             margin: 5px; 
             padding: 5px; 
         }
@@ -52,7 +52,10 @@
     <h1>Teacher Availability</h1>
 
     <h2>Available Right Now</h2>
-    <div id="availability">Loading schedule...</div>
+    <p>Enter time slot for substitute need:</p>
+    <input type="time" id="startTime" step="900"> to <input type="time" id="endTime" step="900">
+    <button onclick="checkAvailability()">Check Availability</button>
+    <div id="availability">No availability checked yet.</div>
 
     <h2>Extra Worked Minutes</h2>
     <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
@@ -95,17 +98,59 @@
 
     <script>
         let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
+        let scheduleData = [];
 
+        // Load schedule data from Lektioner.txt
         fetch('Lektioner.txt').then(r => r.text()).then(data => {
             const lines = data.trim().split('\n');
-            let html = '<table><thead><tr><th>Teacher</th><th>Day</th><th>Start Time</th></tr></thead><tbody>';
-            for (let i = 1; i < lines.length; i++) {
+            for (let i = 1; i < lines.length; i++) { // Skip header
                 const fields = lines[i].split(',');
-                if (fields.length >= 6) html += `<tr><td>${fields[5]}</td><td>${fields[2]}</td><td>${fields[3]}</td></tr>`; // teacher, day, starttime
+                if (fields.length >= 6) {
+                    scheduleData.push({
+                        teacher: fields[5].trim(),
+                        day: fields[2].trim(),
+                        startTime: fields[3].trim(),
+                        length: parseInt(fields[4].trim()) || 0
+                    });
+                }
             }
-            html += '</tbody></table>';
-            document.getElementById('availability').innerHTML = html;
-        }).catch(e => document.getElementById('availability').innerHTML = 'No schedule available.');
+        }).catch(e => console.error('Error loading schedule:', e));
+
+        // Check availability based on input time
+        function checkAvailability() {
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            if (!startTime || !endTime) {
+                document.getElementById('availability').innerHTML = 'Please enter both start and end times.';
+                return;
+            }
+
+            const start = new Date(`2025-10-24 ${startTime}:00`);
+            const end = new Date(`2025-10-24 ${endTime}:00`);
+            if (end <= start) {
+                document.getElementById('availability').innerHTML = 'End time must be after start time.';
+                return;
+            }
+
+            const availableTeachers = new Set(scheduleData.map(s => s.teacher)); // Start with all teachers
+            scheduleData.forEach(entry => {
+                const classStart = new Date(`2025-10-24 ${entry.startTime}:00`);
+                const classEnd = new Date(classStart.getTime() + entry.length * 60000); // Convert minutes to ms
+
+                if (entry.day === 'Friday' && // Assuming today is Friday, October 24, 2025
+                    ((start >= classStart && start < classEnd) || (end > classStart && end <= classEnd) || 
+                     (start <= classStart && end >= classEnd))) {
+                    availableTeachers.delete(entry.teacher);
+                }
+            });
+
+            const availabilityDiv = document.getElementById('availability');
+            if (availableTeachers.size === 0) {
+                availabilityDiv.innerHTML = 'No teachers available for this time slot.';
+            } else {
+                availabilityDiv.innerHTML = '<ul><li>' + Array.from(availableTeachers).join('</li><li>') + '</li></ul>';
+            }
+        }
 
         // Update monthly total
         function updateMonthlyTotal() {
