@@ -1,102 +1,165 @@
-<script>
-    // Sample data structure: Array of {teacher: string, week: string, minutes: number, month: string, year: '2025'}
-    let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Availability</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        button { margin: 5px; padding: 8px 12px; }
+        select { margin: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Teacher Availability</h1>
 
-    // Fetch and display schedule from Lektioner.txt
-    function loadSchedule() {
-        fetch('Lektioner.txt')
-            .then(response => response.text())
-            .then(data => {
-                const availabilityDiv = document.getElementById('availability');
-                const lines = data.trim().split('\n');
-                if (lines.length === 0 || lines[0].trim() === '') {
-                    availabilityDiv.innerHTML = 'No teachers available right now.';
-                    return;
-                }
-                let html = '<ul>';
-                lines.forEach(line => {
-                    const [teacher, time, status, date] = line.split(',');
-                    html += `<li>${teacher.trim()} - ${time.trim()} (${status.trim()}) - ${date.trim()}</li>`;
+    <h2>Available Right Now</h2>
+    <div id="availability">Loading schedule...</div>
+
+    <h2>Extra Worked Minutes</h2>
+    <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
+    <button onclick="exportData()">Export Data</button>
+    <button onclick="importData()">Import Data</button>
+    <input type="file" id="importFile" style="display: none;" onchange="handleImport(event)">
+
+    <h3>Monthly Totals</h3>
+    <p>2025</p>
+    <label>Select a month to see the total:</label>
+    <select id="monthSelect" onchange="updateMonthlyTotal()">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+    <div id="monthlyTotal">0 minutes</div>
+
+    <h3>Detailed Log</h3>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Teacher</th>
+                <th>Week</th>
+                <th>Minutes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows populated by JS -->
+        </tbody>
+    </table>
+    <button onclick="addSampleEntry()">Add Sample Entry</button>
+
+    <script>
+        // Sample data structure: Array of {teacher: string, week: string, minutes: number, month: string, year: '2025'}
+        let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
+
+        // Fetch and display schedule from Lektioner.txt
+        function loadSchedule() {
+            fetch('Lektioner.txt')
+                .then(response => response.text())
+                .then(data => {
+                    const availabilityDiv = document.getElementById('availability');
+                    const lines = data.trim().split('\n');
+                    if (lines.length === 0 || lines[0].trim() === '') {
+                        availabilityDiv.innerHTML = 'No teachers available right now.';
+                        return;
+                    }
+                    let html = '<ul>';
+                    lines.forEach(line => {
+                        const [teacher, time, status, date] = line.split(',');
+                        html += `<li>${teacher.trim()} - ${time.trim()} (${status.trim()}) - ${date.trim()}</li>`;
+                    });
+                    html += '</ul>';
+                    availabilityDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('availability').innerHTML = 'Error loading schedule. Check Lektioner.txt.';
+                    console.error('Error:', error);
                 });
-                html += '</ul>';
-                availabilityDiv.innerHTML = html;
-            })
-            .catch(error => {
-                document.getElementById('availability').innerHTML = 'Error loading schedule. Check Lektioner.txt.';
-                console.error('Error:', error);
-            });
-    }
-
-    // Update monthly total
-    function updateMonthlyTotal() {
-        const month = document.getElementById('monthSelect').value;
-        const total = logData
-            .filter(entry => entry.month === month && entry.year === '2025')
-            .reduce((sum, entry) => sum + entry.minutes, 0);
-        document.getElementById('monthlyTotal').innerHTML = `${total} minutes`;
-    }
-
-    // Populate log table
-    function renderLog() {
-        const tbody = document.querySelector('#logTable tbody');
-        tbody.innerHTML = '';
-        logData.forEach(entry => {
-            const row = tbody.insertRow();
-            row.insertCell(0).textContent = entry.teacher;
-            row.insertCell(1).textContent = entry.week;
-            row.insertCell(2).textContent = entry.minutes;
-        });
-    }
-
-    // Export data
-    function exportData() {
-        const dataStr = JSON.stringify(logData, null, 2);
-        const blob = new Blob([dataStr], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'extra-minutes.json';
-        a.click();
-    }
-
-    // Import data
-    function importData() {
-        document.getElementById('importFile').click();
-    }
-
-    function handleImport(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                logData = JSON.parse(e.target.result);
-                localStorage.setItem('extraMinutes', JSON.stringify(logData));
-                renderLog();
-                updateMonthlyTotal();
-                alert('Data imported!');
-            };
-            reader.readAsText(file);
         }
-    }
 
-    // Add sample entry (for testing - extend with a form)
-    function addSampleEntry() {
-        logData.push({
-            teacher: 'Sample Teacher',
-            week: 'Week 1',
-            minutes: 30,
-            month: '01', // January
-            year: '2025'
-        });
-        localStorage.setItem('extraMinutes', JSON.stringify(logData));
+        // Update monthly total
+        function updateMonthlyTotal() {
+            const month = document.getElementById('monthSelect').value;
+            const total = logData
+                .filter(entry => entry.month === month && entry.year === '2025')
+                .reduce((sum, entry) => sum + entry.minutes, 0);
+            document.getElementById('monthlyTotal').innerHTML = `${total} minutes`;
+        }
+
+        // Populate log table
+        function renderLog() {
+            const tbody = document.querySelector('#logTable tbody');
+            tbody.innerHTML = '';
+            logData.forEach(entry => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = entry.teacher;
+                row.insertCell(1).textContent = entry.week;
+                row.insertCell(2).textContent = entry.minutes;
+            });
+        }
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(logData, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'extra-minutes.json';
+            a.click();
+        }
+
+        // Import data
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logData = JSON.parse(e.target.result);
+                    localStorage.setItem('extraMinutes', JSON.stringify(logData));
+                    renderLog();
+                    updateMonthlyTotal();
+                    alert('Data imported!');
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Add sample entry (for testing - extend with a form)
+        function addSampleEntry() {
+            logData.push({
+                teacher: 'Sample Teacher',
+                week: 'Week 1',
+                minutes: 30,
+                month: '10', // October
+                year: '2025'
+            });
+            localStorage.setItem('extraMinutes', JSON.stringify(logData));
+            renderLog();
+            updateMonthlyTotal();
+        }
+
+        // Load schedule on page load
+        window.onload = loadSchedule;
+
+        // Initial render
         renderLog();
         updateMonthlyTotal();
-    }
-
-    // Load schedule on page load
-    window.onload = loadSchedule;
-
-    // Initial render
-    renderLog();
-    updateMonthlyTotal();
-</script>
+    </script>
+</body>
+</html>
