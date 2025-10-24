@@ -96,6 +96,17 @@
     <script>
         let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
 
+        fetch('Lektioner.txt').then(r => r.text()).then(data => {
+            const lines = data.trim().split('\n');
+            let html = '<table><thead><tr><th>Teacher</th><th>Day</th><th>Start Time</th></tr></thead><tbody>';
+            for (let i = 1; i < lines.length; i++) {
+                const fields = lines[i].split(',');
+                if (fields.length >= 6) html += `<tr><td>${fields[5]}</td><td>${fields[2]}</td><td>${fields[3]}</td></tr>`; // teacher, day, starttime
+            }
+            html += '</tbody></table>';
+            document.getElementById('availability').innerHTML = html;
+        }).catch(e => document.getElementById('availability').innerHTML = 'No schedule available.');
+
         // Update monthly total
         function updateMonthlyTotal() {
             const month = document.getElementById('monthSelect').value;
