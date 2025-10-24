@@ -5,136 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Availability</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            color: #333; 
         }
-        h1 { color: #2c3e50; }
-        h2 { color: #34495e; }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
+        h1, h2, h3 { 
+            color: #333; 
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin-top: 10px; 
         }
-        th {
-            background-color: #34495e;
-            color: white;
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
         }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        tr:hover { background-color: #e0e0e0; }
-        button {
-            margin: 5px;
-            padding: 10px 15px;
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            cursor: pointer;
+        th { 
+            background-color: #f5f5f5; 
         }
-        button:hover { background-color: #34495e; }
-        select {
-            margin: 5px;
-            padding: 10px;
-            border-radius: 4px;
+        button { 
+            margin: 5px; 
+            padding: 8px 12px; 
+            background-color: #f0f0f0; 
+            border: 1px solid #ddd; 
+            cursor: pointer; 
         }
-        .section { margin-bottom: 30px; }
+        button:hover { 
+            background-color: #e0e0e0; 
+        }
+        select { 
+            margin: 5px; 
+            padding: 5px; 
+        }
+        #logTable tr.separator td { 
+            border: none; 
+            padding: 0; 
+            height: 1px; 
+            background-color: #ddd; 
+        }
     </style>
 </head>
 <body>
     <h1>Teacher Availability</h1>
 
-    <div class="section">
-        <h2>Available Right Now</h2>
-        <div id="availability">Loading schedule...</div>
-    </div>
+    <h2>Available Right Now</h2>
+    <div id="availability">Loading schedule...</div>
 
-    <div class="section">
-        <h2>Extra Worked Minutes</h2>
-        <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
-        <button onclick="exportData()">Export Data</button>
-        <button onclick="importData()">Import Data</button>
-        <input type="file" id="importFile" style="display: none;" onchange="handleImport(event)">
+    <h2>Extra Worked Minutes</h2>
+    <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
+    <button onclick="exportData()">Export</button>
+    <button onclick="importData()">Import</button>
+    <input type="file" id="importFile" style="display: none;" accept=".json" onchange="handleImport(event)">
 
-        <h3>Monthly Totals</h3>
-        <p>2025</p>
-        <label>Select a month to see the total:</label>
-        <select id="monthSelect" onchange="updateMonthlyTotal()">
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-        <div id="monthlyTotal">0 minutes</div>
-    </div>
+    <h3>Monthly Totals</h3>
+    <p>2025</p>
+    <p>Select a month to see the total.</p>
+    <select id="monthSelect" onchange="updateMonthlyTotal()">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+    <div id="monthlyTotal">0 minutes</div>
 
-    <div class="section">
-        <h3>Detailed Log</h3>
-        <table id="logTable">
-            <thead>
-                <tr>
-                    <th>Teacher</th>
-                    <th>Week</th>
-                    <th>Minutes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows populated by JS -->
-            </tbody>
-        </table>
-        <button onclick="addSampleEntry()">Add Sample Entry</button>
-    </div>
+    <h3>Detailed Log</h3>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Teacher</th>
+                <th>Week</th>
+                <th>Minutes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows populated by JS -->
+        </tbody>
+    </table>
 
     <script>
-        console.log("Script started");
         let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
 
-        function loadSchedule() {
-            console.log("Fetching Lektioner.txt");
-            fetch('Lektioner.txt')
-                .then(response => {
-                    console.log("Response received:", response);
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.text();
-                })
-                .then(data => {
-                    console.log("Data received:", data);
-                    const availabilityDiv = document.getElementById('availability');
-                    const lines = data.trim().split('\n');
-                    if (lines.length <= 1 || lines[1].trim() === '') {
-                        availabilityDiv.innerHTML = '<p>No teachers available right now.</p>';
-                        return;
-                    }
-                    let html = '<table><thead><tr><th>Teacher</th><th>Day</th><th>Start Time</th><th>Length</th><th>Room</th></tr></thead><tbody>';
-                    for (let i = 1; i < lines.length; i++) {
-                        const fields = lines[i].split(',');
-                        if (fields.length === 12) {
-                            const [id, subject, day, starttime, length, teacher, group, room, period, experiod, inweek, exweek] = fields;
-                            html += `<tr><td>${teacher.trim()}</td><td>${day.trim()}</td><td>${starttime.trim()}</td><td>${length.trim()} mins</td><td>${room.trim()}</td></tr>`;
-                        }
-                    }
-                    html += '</tbody></table>';
-                    availabilityDiv.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error("Fetch error:", error);
-                    document.getElementById('availability').innerHTML = '<p>Error loading schedule. Check Lektioner.txt.</p>';
-                });
-        }
-
+        // Update monthly total
         function updateMonthlyTotal() {
             const month = document.getElementById('monthSelect').value;
             const total = logData
@@ -143,6 +105,7 @@
             document.getElementById('monthlyTotal').innerHTML = `${total} minutes`;
         }
 
+        // Populate log table
         function renderLog() {
             const tbody = document.querySelector('#logTable tbody');
             tbody.innerHTML = '';
@@ -152,8 +115,14 @@
                 row.insertCell(1).textContent = entry.week;
                 row.insertCell(2).textContent = entry.minutes;
             });
+            // Add separator row
+            const sepRow = tbody.insertRow();
+            const sepCell = sepRow.insertCell(0);
+            sepCell.colSpan = 3;
+            sepCell.className = 'separator';
         }
 
+        // Export data
         function exportData() {
             const dataStr = JSON.stringify(logData, null, 2);
             const blob = new Blob([dataStr], {type: 'application/json'});
@@ -162,8 +131,10 @@
             a.href = url;
             a.download = 'extra-minutes.json';
             a.click();
+            URL.revokeObjectURL(url);
         }
 
+        // Import data
         function importData() {
             document.getElementById('importFile').click();
         }
@@ -173,31 +144,21 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    logData = JSON.parse(e.target.result);
-                    localStorage.setItem('extraMinutes', JSON.stringify(logData));
-                    renderLog();
-                    updateMonthlyTotal();
-                    alert('Data imported!');
+                    try {
+                        logData = JSON.parse(e.target.result);
+                        localStorage.setItem('extraMinutes', JSON.stringify(logData));
+                        renderLog();
+                        updateMonthlyTotal();
+                        alert('Data imported successfully!');
+                    } catch (error) {
+                        alert('Invalid file format. Please use a JSON file.');
+                    }
                 };
                 reader.readAsText(file);
             }
         }
 
-        function addSampleEntry() {
-            logData.push({
-                teacher: 'Sample Teacher',
-                week: 'Week 1',
-                minutes: 30,
-                month: '10', // October
-                year: '2025'
-            });
-            localStorage.setItem('extraMinutes', JSON.stringify(logData));
-            renderLog();
-            updateMonthlyTotal();
-        }
-
-        window.onload = loadSchedule;
-        console.log("Initial render");
+        // Initial render
         renderLog();
         updateMonthlyTotal();
     </script>
