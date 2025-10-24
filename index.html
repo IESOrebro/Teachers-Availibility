@@ -5,59 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Availability</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        button { margin: 5px; padding: 8px 12px; cursor: pointer; }
-        select { margin: 5px; padding: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #e0e0e0; }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover { background-color: #34495e; }
+        select {
+            margin: 5px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .section { margin-bottom: 30px; }
     </style>
 </head>
 <body>
     <h1>Teacher Availability</h1>
 
-    <h2>Available Right Now</h2>
-    <div id="availability">Loading schedule...</div>
+    <div class="section">
+        <h2>Available Right Now</h2>
+        <div id="availability">Loading schedule...</div>
+    </div>
 
-    <h2>Extra Worked Minutes</h2>
-    <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
-    <button onclick="exportData()">Export Data</button>
-    <button onclick="importData()">Import Data</button>
-    <input type="file" id="importFile" style="display: none;" onchange="handleImport(event)">
+    <div class="section">
+        <h2>Extra Worked Minutes</h2>
+        <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
+        <button onclick="exportData()">Export Data</button>
+        <button onclick="importData()">Import Data</button>
+        <input type="file" id="importFile" style="display: none;" onchange="handleImport(event)">
 
-    <h3>Monthly Totals</h3>
-    <p>2025</p>
-    <label>Select a month to see the total:</label>
-    <select id="monthSelect" onchange="updateMonthlyTotal()">
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
-    <div id="monthlyTotal">0 minutes</div>
+        <h3>Monthly Totals</h3>
+        <p>2025</p>
+        <label>Select a month to see the total:</label>
+        <select id="monthSelect" onchange="updateMonthlyTotal()">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <div id="monthlyTotal">0 minutes</div>
+    </div>
 
-    <h3>Detailed Log</h3>
-    <table id="logTable">
-        <thead>
-            <tr>
-                <th>Teacher</th>
-                <th>Week</th>
-                <th>Minutes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Rows populated by JS -->
-        </tbody>
-    </table>
-    <button onclick="addSampleEntry()">Add Sample Entry</button>
+    <div class="section">
+        <h3>Detailed Log</h3>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Teacher</th>
+                    <th>Week</th>
+                    <th>Minutes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows populated by JS -->
+            </tbody>
+        </table>
+        <button onclick="addSampleEntry()">Add Sample Entry</button>
+    </div>
 
     <script>
         console.log("Script started");
@@ -75,24 +114,24 @@
                     console.log("Data received:", data);
                     const availabilityDiv = document.getElementById('availability');
                     const lines = data.trim().split('\n');
-                    if (lines.length <= 1 || lines[1].trim() === '') { // Skip header
-                        availabilityDiv.innerHTML = 'No teachers available right now.';
+                    if (lines.length <= 1 || lines[1].trim() === '') {
+                        availabilityDiv.innerHTML = '<p>No teachers available right now.</p>';
                         return;
                     }
-                    let html = '<ul>';
-                    for (let i = 1; i < lines.length; i++) { // Start from 1 to skip header
+                    let html = '<table><thead><tr><th>Teacher</th><th>Day</th><th>Start Time</th><th>Length</th><th>Room</th></tr></thead><tbody>';
+                    for (let i = 1; i < lines.length; i++) {
                         const fields = lines[i].split(',');
-                        if (fields.length === 12) { // Ensure all 12 columns are present
+                        if (fields.length === 12) {
                             const [id, subject, day, starttime, length, teacher, group, room, period, experiod, inweek, exweek] = fields;
-                            html += `<li>${teacher.trim()} - ${day.trim()} ${starttime.trim()} (${length.trim()} mins) in ${room.trim()}</li>`;
+                            html += `<tr><td>${teacher.trim()}</td><td>${day.trim()}</td><td>${starttime.trim()}</td><td>${length.trim()} mins</td><td>${room.trim()}</td></tr>`;
                         }
                     }
-                    html += '</ul>';
+                    html += '</tbody></table>';
                     availabilityDiv.innerHTML = html;
                 })
                 .catch(error => {
                     console.error("Fetch error:", error);
-                    document.getElementById('availability').innerHTML = 'Error loading schedule. Check Lektioner.txt.';
+                    document.getElementById('availability').innerHTML = '<p>Error loading schedule. Check Lektioner.txt.</p>';
                 });
         }
 
