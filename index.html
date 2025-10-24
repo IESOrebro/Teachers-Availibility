@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv"> <!-- Set language to Swedish -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Availability</title>
+    <title>Lärartillgänglighet</title> <!-- Swedish title -->
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         table { border-collapse: collapse; width: 100%; }
@@ -14,64 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Teacher Availability</h1>
+    <h1>Lärartillgänglighet</h1> <!-- Swedish heading -->
 
-    <h2>Available Right Now</h2>
-    <div id="availability">Loading schedule...</div>
+    <h2>Tillgängliga just nu</h2> <!-- Swedish for "Available Right Now" -->
+    <div id="availability">Laddar schema...</div> <!-- Swedish for "Loading schedule..." -->
 
-    <h2>Extra Worked Minutes</h2>
-    <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
-    <button onclick="exportData()">Export Data</button>
-    <button onclick="importData()">Import Data</button>
+    <h2>Extra Arbetade Minuter</h2> <!-- Swedish for "Extra Worked Minutes" -->
+    <p>Dessa data lagras i din webbläsare. Använd Exportera/Importera-knapparna för att säkerhetskopiera eller återställa.</p> <!-- Swedish translation -->
+    <button onclick="exportData()">Exportera Data</button> <!-- Swedish for "Export Data" -->
+    <button onclick="importData()">Importera Data</button> <!-- Swedish for "Import Data" -->
     <input type="file" id="importFile" style="display: none;" onchange="handleImport(event)">
 
-    <h3>Monthly Totals</h3>
+    <h3>Månadssummor</h3> <!-- Swedish for "Monthly Totals" -->
     <p>2025</p>
-    <label>Select a month to see the total:</label>
+    <label>Välj en månad för att se totalen:</label> <!-- Swedish for "Select a month to see the total:" -->
     <select id="monthSelect" onchange="updateMonthlyTotal()">
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
+        <option value="01">Januari</option>
+        <option value="02">Februari</option>
+        <option value="03">Mars</option>
         <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
+        <option value="05">Maj</option>
+        <option value="06">Juni</option>
+        <option value="07">Juli</option>
+        <option value="08">Augusti</option>
         <option value="09">September</option>
-        <option value="10">October</option>
+        <option value="10">Oktober</option>
         <option value="11">November</option>
         <option value="12">December</option>
     </select>
-    <div id="monthlyTotal">0 minutes</div>
+    <div id="monthlyTotal">0 minuter</div> <!-- Swedish for "0 minutes" -->
 
-    <h3>Detailed Log</h3>
+    <h3>Detaljerad Logg</h3> <!-- Swedish for "Detailed Log" -->
     <table id="logTable">
         <thead>
             <tr>
-                <th>Teacher</th>
-                <th>Week</th>
-                <th>Minutes</th>
+                <th>Lärare</th> <!-- Swedish for "Teacher" -->
+                <th>Vecka</th> <!-- Swedish for "Week" -->
+                <th>Minuter</th> <!-- Swedish for "Minutes" -->
             </tr>
         </thead>
         <tbody>
             <!-- Rows populated by JS -->
         </tbody>
     </table>
-    <button onclick="addSampleEntry()">Add Sample Entry</button>
+    <button onclick="addSampleEntry()">Lägg till Exempelpost</button> <!-- Swedish for "Add Sample Entry" -->
 
     <script>
-        // Sample data structure: Array of {teacher: string, week: string, minutes: number, month: string, year: '2025'}
+        console.log("Script started");
         let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
 
-        // Fetch and display schedule from Lektioner.txt
         function loadSchedule() {
+            console.log("Fetching Lektioner.txt");
             fetch('Lektioner.txt')
-                .then(response => response.text())
+                .then(response => {
+                    console.log("Response received:", response);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
                 .then(data => {
+                    console.log("Data received:", data);
                     const availabilityDiv = document.getElementById('availability');
                     const lines = data.trim().split('\n');
                     if (lines.length === 0 || lines[0].trim() === '') {
-                        availabilityDiv.innerHTML = 'No teachers available right now.';
+                        availabilityDiv.innerHTML = 'Inga lärare tillgängliga just nu.'; // Swedish
                         return;
                     }
                     let html = '<ul>';
@@ -83,21 +88,19 @@
                     availabilityDiv.innerHTML = html;
                 })
                 .catch(error => {
-                    document.getElementById('availability').innerHTML = 'Error loading schedule. Check Lektioner.txt.';
-                    console.error('Error:', error);
+                    console.error("Fetch error:", error);
+                    document.getElementById('availability').innerHTML = 'Fel vid laddning av schema. Kontrollera Lektioner.txt.'; // Swedish
                 });
         }
 
-        // Update monthly total
         function updateMonthlyTotal() {
             const month = document.getElementById('monthSelect').value;
             const total = logData
                 .filter(entry => entry.month === month && entry.year === '2025')
                 .reduce((sum, entry) => sum + entry.minutes, 0);
-            document.getElementById('monthlyTotal').innerHTML = `${total} minutes`;
+            document.getElementById('monthlyTotal').innerHTML = `${total} minuter`;
         }
 
-        // Populate log table
         function renderLog() {
             const tbody = document.querySelector('#logTable tbody');
             tbody.innerHTML = '';
@@ -109,18 +112,16 @@
             });
         }
 
-        // Export data
         function exportData() {
             const dataStr = JSON.stringify(logData, null, 2);
             const blob = new Blob([dataStr], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'extra-minutes.json';
+            a.download = 'extra-minuter.json'; // Swedish
             a.click();
         }
 
-        // Import data
         function importData() {
             document.getElementById('importFile').click();
         }
@@ -134,17 +135,16 @@
                     localStorage.setItem('extraMinutes', JSON.stringify(logData));
                     renderLog();
                     updateMonthlyTotal();
-                    alert('Data imported!');
+                    alert('Data importerad!'); // Swedish
                 };
                 reader.readAsText(file);
             }
         }
 
-        // Add sample entry (for testing - extend with a form)
         function addSampleEntry() {
             logData.push({
-                teacher: 'Sample Teacher',
-                week: 'Week 1',
+                teacher: 'Exempel Lärare', // Swedish
+                week: 'Vecka 1',
                 minutes: 30,
                 month: '10', // October
                 year: '2025'
@@ -154,10 +154,8 @@
             updateMonthlyTotal();
         }
 
-        // Load schedule on page load
         window.onload = loadSchedule;
-
-        // Initial render
+        console.log("Initial render");
         renderLog();
         updateMonthlyTotal();
     </script>
