@@ -3,69 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Availability</title>
+    <title>Substitute Coordinator</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 20px; 
-            color: #333; 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
         }
-        h1, h2, h3 { 
-            color: #333; 
+        h1, h2, h3 {
+            color: #333;
         }
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
-            margin-top: 10px; 
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
         }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 8px; 
-            text-align: left; 
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
-        th { 
-            background-color: #f5f5f5; 
+        th {
+            background-color: #f5f5f5;
         }
-        button { 
-            margin: 5px; 
-            padding: 8px 12px; 
-            background-color: #f0f0f0; 
-            border: 1px solid #ddd; 
-            cursor: pointer; 
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            cursor: pointer;
         }
-        button:hover { 
-            background-color: #e0e0e0; 
+        button:hover {
+            background-color: #e0e0e0;
         }
-        select, input[type="time"] { 
-            margin: 5px; 
-            padding: 5px; 
+        select, input[type="time"] {
+            margin: 5px;
+            padding: 5px;
         }
-        #logTable tr.separator td { 
-            border: none; 
-            padding: 0; 
-            height: 1px; 
-            background-color: #ddd; 
+        #logTable tr.separator td {
+            border: none;
+            padding: 0;
+            height: 1px;
+            background-color: #ddd;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .error {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <h1>Teacher Availability</h1>
+    <h1>Substitute Coordinator</h1>
 
-    <h2>Available Right Now</h2>
-    <p>Enter time slot for substitute need:</p>
-    <input type="time" id="startTime" step="900"> to <input type="time" id="endTime" step="900">
-    <button onclick="checkAvailability()">Check Availability</button>
-    <div id="availability">No availability checked yet.</div>
+    <h2>Find Available Teachers</h2>
+    <div class="input-group">
+        <label for="daySelect">Select Day:</label>
+        <select id="daySelect">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+        </select>
+        <label>Time Slot:</label>
+        <input type="time" id="startTime" step="900"> to <input type="time" id="endTime" step="900">
+        <button onclick="checkAvailability()">Check Availability</button>
+    </div>
+    <h3>Available Teachers</h3>
+    <table id="availabilityTable">
+        <thead>
+            <tr>
+                <th>Teacher</th>
+                <th>Available Slots</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Populated by JS -->
+        </tbody>
+    </table>
 
     <h2>Extra Worked Minutes</h2>
-    <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
+    <p>Data is stored in your browser. Use Export/Import to back up or restore.</p>
     <button onclick="exportData()">Export</button>
     <button onclick="importData()">Import</button>
     <input type="file" id="importFile" style="display: none;" accept=".json" onchange="handleImport(event)">
 
     <h3>Monthly Totals</h3>
     <p>2025</p>
-    <p>Select a month to see the total.</p>
     <select id="monthSelect" onchange="updateMonthlyTotal()">
         <option value="01">January</option>
         <option value="02">February</option>
@@ -76,7 +103,7 @@
         <option value="07">July</option>
         <option value="08">August</option>
         <option value="09">September</option>
-        <option value="10">October</option>
+        <option value="10" selected>October</option>
         <option value="11">November</option>
         <option value="12">December</option>
     </select>
@@ -87,12 +114,15 @@
         <thead>
             <tr>
                 <th>Teacher</th>
-                <th>Week</th>
+                <th>Day</th>
+                <th>Time Slot</th>
                 <th>Minutes</th>
+                <th>Week</th>
+                <th>Month</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Rows populated by JS -->
+            <!-- Populated by JS -->
         </tbody>
     </table>
 
@@ -100,56 +130,140 @@
         let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
         let scheduleData = [];
 
-        // Load schedule data from Lektioner.txt
-        fetch('Lektioner.txt').then(r => r.text()).then(data => {
-            const lines = data.trim().split('\n');
-            for (let i = 1; i < lines.length; i++) { // Skip header
-                const fields = lines[i].split(',');
-                if (fields.length >= 6) {
-                    scheduleData.push({
-                        teacher: fields[5].trim(),
-                        day: fields[2].trim(),
-                        startTime: fields[3].trim(),
-                        length: parseInt(fields[4].trim()) || 0
-                    });
-                }
-            }
-        }).catch(e => console.error('Error loading schedule:', e));
+        // Replace with your GitHub raw URL for Lektioner.txt
+        const scheduleUrl = 'https://raw.githubusercontent.com/your-repo/your-file/Lektioner.txt';
 
-        // Check availability based on input time
+        // Load schedule from GitHub
+        fetch(scheduleUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load Lektioner.txt');
+                return response.text();
+            })
+            .then(data => {
+                const lines = data.trim().split('\n');
+                const headers = lines[0].split('\t').map(h => h.trim());
+                for (let i = 1; i < lines.length; i++) {
+                    const fields = lines[i].split('\t').map(f => f.trim());
+                    if (fields.length >= 6) {
+                        scheduleData.push({
+                            teacher: fields[0],
+                            Monday: fields[1],
+                            Tuesday: fields[2],
+                            Wednesday: fields[3],
+                            Thursday: fields[4],
+                            Friday: fields[5]
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading schedule:', error);
+                document.getElementById('availabilityTable').innerHTML = '<tr><td colspan="3" class="error">Error loading schedule. Please check the file URL.</td></tr>';
+            });
+
+        // Parse time in 24-hour format (e.g., "13:35") to minutes since midnight
+        function parseTime(timeStr) {
+            if (!timeStr || timeStr === '-' || timeStr === '??') return null;
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        // Check if two time slots overlap
+        function isOverlap(start1, end1, start2, end2) {
+            return start1 < end2 && start2 < end1;
+        }
+
+        // Check availability for a given day and time slot
         function checkAvailability() {
+            const day = document.getElementById('daySelect').value;
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
+            const tbody = document.querySelector('#availabilityTable tbody');
+            tbody.innerHTML = '';
+
             if (!startTime || !endTime) {
-                document.getElementById('availability').innerHTML = 'Please enter both start and end times.';
+                tbody.innerHTML = '<tr><td colspan="3" class="error">Please enter both start and end times.</td></tr>';
                 return;
             }
 
-            const start = new Date(`2025-10-24 ${startTime}:00`);
-            const end = new Date(`2025-10-24 ${endTime}:00`);
-            if (end <= start) {
-                document.getElementById('availability').innerHTML = 'End time must be after start time.';
+            const startMinutes = parseTime(startTime);
+            const endMinutes = parseTime(endTime);
+            if (endMinutes <= startMinutes) {
+                tbody.innerHTML = '<tr><td colspan="3" class="error">End time must be after start time.</td></tr>';
                 return;
             }
 
-            const availableTeachers = new Set(scheduleData.map(s => s.teacher)); // Start with all teachers
+            const availableTeachers = [];
             scheduleData.forEach(entry => {
-                const classStart = new Date(`2025-10-24 ${entry.startTime}:00`);
-                const classEnd = new Date(classStart.getTime() + entry.length * 60000); // Convert minutes to ms
+                const slots = entry[day].split(';').filter(s => s !== '-' && s !== '??');
+                let isAvailable = true;
+                let slotText = entry[day];
 
-                if (entry.day === 'Friday' && // Assuming today is Friday, October 24, 2025
-                    ((start >= classStart && start < classEnd) || (end > classStart && end <= classEnd) || 
-                     (start <= classStart && end >= classEnd))) {
-                    availableTeachers.delete(entry.teacher);
+                // Handle special cases (notes)
+                if (slotText.includes('check schedule') || slotText.includes('any of his support times') || slotText === '-') {
+                    availableTeachers.push({ teacher: entry.teacher, slots: slotText });
+                    return;
+                }
+
+                // Check for overlaps with scheduled slots
+                for (const slot of slots) {
+                    if (!slot.includes('-')) continue; // Skip incomplete slots like "13:20-"
+                    const [slotStart, slotEnd] = slot.split('-').map(parseTime);
+                    if (slotStart === null || slotEnd === null) continue;
+                    if (isOverlap(startMinutes, endMinutes, slotStart, slotEnd)) {
+                        isAvailable = false;
+                        break;
+                    }
+                }
+
+                if (isAvailable) {
+                    availableTeachers.push({ teacher: entry.teacher, slots: slotText });
                 }
             });
 
-            const availabilityDiv = document.getElementById('availability');
-            if (availableTeachers.size === 0) {
-                availabilityDiv.innerHTML = 'No teachers available for this time slot.';
+            if (availableTeachers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">No teachers available for this time slot.</td></tr>';
             } else {
-                availabilityDiv.innerHTML = '<ul><li>' + Array.from(availableTeachers).join('</li><li>') + '</li></ul>';
+                availableTeachers.forEach(({ teacher, slots }) => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = teacher;
+                    row.insertCell(1).textContent = slots === '-' ? 'No scheduled classes' : slots === '??' ? 'Check availability' : slots;
+                    const actionCell = row.insertCell(2);
+                    const assignButton = document.createElement('button');
+                    assignButton.textContent = 'Assign';
+                    assignButton.onclick = () => assignSubstitute(teacher, day, startTime, endTime);
+                    actionCell.appendChild(assignButton);
+                });
             }
+        }
+
+        // Assign a substitute and log the minutes
+        function assignSubstitute(teacher, day, startTime, endTime) {
+            const startMinutes = parseTime(startTime);
+            const endMinutes = parseTime(endTime);
+            const minutes = endMinutes - startMinutes;
+            const today = new Date('2025-10-26');
+            // Approximate ISO week number
+            const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+            const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+            const week = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            const month = ('0' + (today.getMonth() + 1)).slice(-2);
+            const year = today.getFullYear().toString();
+
+            logData.push({
+                teacher,
+                day,
+                timeSlot: `${startTime}-${endTime}`,
+                minutes,
+                week: week.toString().padStart(2, '0'),
+                month,
+                year
+            });
+
+            localStorage.setItem('extraMinutes', JSON.stringify(logData));
+            renderLog();
+            updateMonthlyTotal();
+            alert(`${teacher} assigned as substitute for ${day} ${startTime}-${endTime} (${minutes} minutes).`);
         }
 
         // Update monthly total
@@ -168,20 +282,22 @@
             logData.forEach(entry => {
                 const row = tbody.insertRow();
                 row.insertCell(0).textContent = entry.teacher;
-                row.insertCell(1).textContent = entry.week;
-                row.insertCell(2).textContent = entry.minutes;
+                row.insertCell(1).textContent = entry.day;
+                row.insertCell(2).textContent = entry.timeSlot;
+                row.insertCell(3).textContent = entry.minutes;
+                row.insertCell(4).textContent = entry.week;
+                row.insertCell(5).textContent = entry.month;
             });
-            // Add separator row
             const sepRow = tbody.insertRow();
             const sepCell = sepRow.insertCell(0);
-            sepCell.colSpan = 3;
+            sepCell.colSpan = 6;
             sepCell.className = 'separator';
         }
 
         // Export data
         function exportData() {
             const dataStr = JSON.stringify(logData, null, 2);
-            const blob = new Blob([dataStr], {type: 'application/json'});
+            const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
