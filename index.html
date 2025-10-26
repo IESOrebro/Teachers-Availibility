@@ -52,10 +52,15 @@
         .error {
             color: red;
         }
+        #fetchStatus {
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
     <h1>Substitute Coordinator</h1>
+    <div id="fetchStatus">Loading schedule...</div>
 
     <h2>Find Available Teachers</h2>
     <div class="input-group">
@@ -133,33 +138,91 @@
         // Replace with your GitHub raw URL for Lektioner.txt
         const scheduleUrl = 'https://raw.githubusercontent.com/your-repo/your-file/Lektioner.txt';
 
-        // Load schedule from GitHub
-        fetch(scheduleUrl)
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load Lektioner.txt');
-                return response.text();
-            })
-            .then(data => {
-                const lines = data.trim().split('\n');
-                const headers = lines[0].split('\t').map(h => h.trim());
-                for (let i = 1; i < lines.length; i++) {
-                    const fields = lines[i].split('\t').map(f => f.trim());
-                    if (fields.length >= 6) {
-                        scheduleData.push({
-                            teacher: fields[0],
-                            Monday: fields[1],
-                            Tuesday: fields[2],
-                            Wednesday: fields[3],
-                            Thursday: fields[4],
-                            Friday: fields[5]
-                        });
-                    }
+        // Fallback schedule data (from provided Lektioner.txt content)
+        const fallbackSchedule = `Teacher                        Monday                     Tuesday                    Wednesday                  Thursday                   Friday
+Agnes Hellvig                 Check schedule when needed -                        -                          -                          -
+Alan Smith                    -;13:35-14:50             -;9:20-10:30              -                          -                          -
+Alex Reid                     -                          9:00-10:00;13:20-         -                          10:55-12:15               -
+Alvinda Hall                  9:35-10:45;13:40-14:40   -                          12:35-14:00               9:00-10:20                -
+Alyssa Gestrinius             10:30-11:30               -                          -                          -                          -
+Amanda Bergström              -;14:45-16:00             -                          -;12:50-14:30             -                          -
+Amra Zaklan                   -                          10:15-11:25               -                          -                          -
+Angelica Norgren              check schedule             check schedule             check schedule             check schedule             check schedule
+Ann-Sofie Nordbrandt          9:55-10:55                -;13:05-15:00             10:30-11:45               -                          -
+Anna Svensson                 9:50-12:10                8:00-10:55                8:00-9:50                 9:45-10:55                -
+Carl Ölvstam                  -;12:30-13:55             8:00-11:00;13:30-14:30    10:55-12:00               -;13:30-14:30             -
+Caroline Kohl                 -;12:05-13:20             -                          10:30-11:30               -                          -
+Catherine Asp                 8:45-10:00                -                          -;11:00-12:45             -                          -
+Dag Mollestam                 10:25-11:25;13:15-14:15  -                          -;13:15-14:30             8:00-9:20                 -
+Dane Söderkvist               8:00-9:10                 -;13:25-14:25             9:20-10:30                -                          -
+Elyssa Fors                   8:45-10:05;13:55-15:00   -;13:40-15:00             -;11:35-12:50             -;13:50-15:30             -
+Fiona Olsson                  9:20-10:20                -;13:30-16:00             9:20-10:30;13:15-         9:25-11:20                -
+Garret Cooke                  any of his support times  any of his support times  any of his support times  any of his support times  any of his support times
+Hanna Ohlsson                 9:20-11:00;14:25-15:30   9:15-11:00                -;13:20-14:30             9:20-10:30                -
+Jessica Erke                  8:00-9:50;11:00-12:05    8:10-10:25                10:20-11:35               -;8:00-9:20               -
+Jo-Anne Wong                  -                          -                          -;12:50-                  9:20-10:40                -
+Johan Anselmius               9:50-11:00                -;15:00-16:00             9:20-10:25                -                          -
+Jon Hammar                    -                          8:15-9:15                 9:00-11:05                8:15-9:30                 8:00-9:15
+Juan Ruiz                     Check his schedule, doesn't work everyday -;12:50-14:35 -;12:30-13:35 - -
+Kayley Scrooby                -;12:45-14:20             -                          9:50-11:05                -                          -
+Kevin Belyea                  -;14:50-16:00             9:20-11:40                -;12:00-13:40             8:00-9:15                 -
+Kristoffer Sjöberg            8:45-10:05;13:05-14:05   -;12:10-13:45             11:15-12:35               9:40-10:50;-              8:00-9:40
+Lethea McCann                 -                          9:20-11:25;12:40-14:50   -;13:05-14:40             9:15-10:25                -
+Linda Nordh                   -                          -                          -                          -                          -
+Linda Palmkvist               8:50-9:50                 -                          -;12:50-13:55             -                          -
+Lisa Lonergan                 -;12:40-14:35             9:20-10:35                9:35-10:55                9:20-11:15;-              -;12:00-14:45
+Michaela Japec                -                          9:15-11:45                10:30-11:45               8:00-9:45                 -
+Naomi Kirkvold                9:20-10:30;13:35-14:40   9:20-10:40                -;12:15-13:25             9:15-10:25                -
+Niclas Andersson              -                          -;13:40-14:30             9:00-10:20                -;14:00-15:50             -
+Nina Easy Palm                -                          -;12:25-13:25             -;12:40-13:40             -                          -;??
+Patricio Caro Gonzalez        -                          -                          10:50-11:50               -                          -
+Susanne Lundkvist             9:25-10:30                -;12:30-14:35             9:20-10:30                -;12:05-13:30             -
+Tekla Alsbjer                 -;14:10-15:15             9:20-10:25                8:00-9:15                 -;14:40-15:45             9:15-10:30
+Tilde Lidner                  9:50-11:05;12:20-13:30   9:20-10:25                12:00-13:35               -;11:55-13:30             -
+Timothy Parcel                -;13:15-14:45             -                          -;13:15-                  8:00-9:45                 -
+Wynonah Plattner              Check her schedule         -                          -                          -                          -
+Yoni Olsson                   -;12:20-14:00             9:15-10:20;14:50-16:00    8:00-9:15                 13:00-14:30               -
+Zlatan Jaranovic              10:55-12:00               8:00-9:15                 8:00-9:30                 -                          -
+Zofia Czarnowska              -                          -;14:45-16:00             11:20-12:30               11:20-12:35;14:30-16:00   9:20-10:30`;
+
+        // Load schedule from GitHub or use fallback
+        function loadSchedule() {
+            const statusDiv = document.getElementById('fetchStatus');
+            fetch(scheduleUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                    return response.text();
+                })
+                .then(data => {
+                    statusDiv.textContent = 'Schedule loaded successfully.';
+                    parseSchedule(data);
+                })
+                .catch(error => {
+                    console.error('Error loading schedule:', error);
+                    statusDiv.textContent = 'Failed to load schedule from GitHub. Using fallback data.';
+                    parseSchedule(fallbackSchedule);
+                });
+        }
+
+        // Parse schedule data
+        function parseSchedule(data) {
+            scheduleData = [];
+            const lines = data.trim().split('\n');
+            const headers = lines[0].split('\t').map(h => h.trim());
+            for (let i = 1; i < lines.length; i++) {
+                const fields = lines[i].split('\t').map(f => f.trim());
+                if (fields.length >= 6) {
+                    scheduleData.push({
+                        teacher: fields[0],
+                        Monday: fields[1],
+                        Tuesday: fields[2],
+                        Wednesday: fields[3],
+                        Thursday: fields[4],
+                        Friday: fields[5]
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Error loading schedule:', error);
-                document.getElementById('availabilityTable').innerHTML = '<tr><td colspan="3" class="error">Error loading schedule. Please check the file URL.</td></tr>';
-            });
+            }
+        }
 
         // Parse time in 24-hour format (e.g., "13:35") to minutes since midnight
         function parseTime(timeStr) {
@@ -330,7 +393,8 @@
             }
         }
 
-        // Initial render
+        // Initial setup
+        loadSchedule();
         renderLog();
         updateMonthlyTotal();
     </script>
