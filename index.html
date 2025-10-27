@@ -7,23 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Light mode only */
+            /* Light mode only, changed to light blue */
             --bg-gradient: linear-gradient(135deg, #f0f4ff, #c3daff 50%, #e0eaff);
             --wave-pattern: repeating-linear-gradient(135deg, rgba(200, 225, 245, 0.1) 0, rgba(200, 225, 245, 0.1) 20px, rgba(180, 210, 235, 0.1) 20px, rgba(180, 210, 235, 0.1) 40px);
             --container-bg: rgba(255, 255, 255, 0.97);
             --section-bg: rgba(255, 255, 255, 0.99);
             --text-color: #1a202c;
-            --accent-color: #34d399;
-            --accent-dark: #059669;
-            --border-color: rgba(52, 211, 153, 0.3);
+            --accent-color: #60a5fa; /* Light blue */
+            --accent-dark: #2563eb; /* Darker blue for contrast */
+            --border-color: rgba(96, 165, 250, 0.3); /* Light blue border */
             --button-bg: rgba(240, 244, 255, 0.95);
             --button-hover: rgba(224, 234, 255, 0.95);
-            --available-bg: linear-gradient(135deg, #34d399, #059669);
-            --available-hover: linear-gradient(135deg, #059669, #047857);
-            --shadow-color: rgba(52, 211, 153, 0.2);
+            --available-bg: linear-gradient(135deg, #60a5fa, #2563eb); /* Light blue gradient */
+            --available-hover: linear-gradient(135deg, #2563eb, #1e40af); /* Darker blue hover */
+            --shadow-color: rgba(96, 165, 250, 0.2); /* Light blue shadow */
             --input-bg: rgba(245, 248, 255, 0.98);
-            --input-border: #34d399;
-            --input-shadow: rgba(52, 211, 153, 0.15);
+            --input-border: #60a5fa; /* Light blue */
+            --input-shadow: rgba(96, 165, 250, 0.15); /* Light blue shadow */
         }
 
         body {
@@ -103,7 +103,7 @@
             background: var(--button-bg);
             border: 1px solid var(--accent-color);
             border-radius: 12px;
-            cursor: default;
+            cursor: pointer;
             font-size: 16px;
             color: var(--text-color);
             font-weight: 600;
@@ -151,7 +151,7 @@
 
         .search-bar:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px var(--shadow-color);
             border-color: var(--accent-dark);
         }
 
@@ -185,7 +185,7 @@
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px var(--shadow-color);
             border-color: var(--accent-dark);
         }
 
@@ -200,6 +200,7 @@
             font-weight: 600;
             transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            margin: 5px; /* Added for spacing between buttons */
         }
 
         button:hover {
@@ -271,7 +272,7 @@
 
         .totals select:focus {
             outline: none;
-            box-shadow: 0 4px 8px var(--shadow-color), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            box-shadow: 0 4px 8px var(--shadow-color), 0 0 0 3px var(--shadow-color);
             border-color: var(--accent-dark);
         }
 
@@ -356,6 +357,7 @@
             <p id="availabilityTime"></p>
             <input type="text" class="search-bar" id="teacherSearch" placeholder="Search teachers...">
             <div class="teachers" id="availableTeachers"></div>
+            <div class="availability-list" id="availabilityDetails"></div>
         </div>
         <div class="section">
             <h2>Check Availability for a Time Range</h2>
@@ -401,6 +403,7 @@
                 <input type="number" id="minutes">
             </div>
             <button onclick="ui.handleAddEntry()">Add</button>
+            <button onclick="ui.handleExportEntries()">Export Data</button>
         </div>
         <div class="section">
             <h2>Monthly Totals</h2>
@@ -524,12 +527,28 @@
                     const startTime = startHour * 60 + startMin;
                     const endTime = endHour * 60 + endMin;
                     return { startTime, endTime, range };
-                }).filter(({ startTime, endTime }) => startTime >= fromTime && endTime <= toTime);
+                }).filter(({ startTime, endTime }) => startTime <= fromTime && endTime >= toTime);
 
                 return {
                     available: availableRanges.length > 0,
                     ranges: availableRanges.map(r => r.range)
                 };
+            },
+
+            getWeeklySchedule(teacher, startDate) {
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                const schedule = {};
+                days.forEach((day, index) => {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + index);
+                    const daySchedule = teacher.schedule[day] || "-";
+                    if (daySchedule.includes("Check schedule") || daySchedule.includes("any of his support times")) {
+                        schedule[day] = "Check schedule";
+                    } else {
+                        schedule[day] = daySchedule === "-" ? "-" : daySchedule.split(';').filter(range => range !== "-").join(", ");
+                    }
+                });
+                return schedule;
             }
         };
 
@@ -543,6 +562,7 @@
                     this.renderTeachers();
                     this.renderDropdown();
                     this.setupSearch();
+                    this.setupTeacherClicks();
                     this.setupTimeZone();
                 }).catch(error => console.error('Error in init:', error));
             },
@@ -557,16 +577,28 @@
                 const availableDiv = document.getElementById('availableTeachers');
                 availableDiv.innerHTML = '';
                 data.teacherButtons = {};
-                const currentMin = new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: data.timeZone })
+                const now = new Date();
+                const currentMin = now.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: data.timeZone })
                     .split(':').map(Number).reduce((h, m) => h * 60 + m);
-                data.teachers.forEach(teacher => {
-                    const btn = document.createElement('button');
-                    btn.textContent = teacher.name;
-                    btn.className = 'teacher-btn';
-                    if (data.isAvailable(teacher, new Date(), currentMin, currentMin + 60).available) btn.classList.add('available');
-                    availableDiv.appendChild(btn);
-                    data.teacherButtons[teacher.name] = btn;
-                });
+                
+                const availableTeachers = data.teachers.filter(teacher => 
+                    data.isAvailable(teacher, now, currentMin, currentMin).available
+                );
+
+                if (availableTeachers.length === 0) {
+                    const p = document.createElement('p');
+                    p.textContent = 'No teachers available right now.';
+                    availableDiv.appendChild(p);
+                } else {
+                    availableTeachers.forEach(teacher => {
+                        const btn = document.createElement('button');
+                        btn.textContent = teacher.name;
+                        btn.className = 'teacher-btn available';
+                        btn.dataset.teacherName = teacher.name;
+                        availableDiv.appendChild(btn);
+                        data.teacherButtons[teacher.name] = btn;
+                    });
+                }
             },
 
             renderDropdown() {
@@ -584,15 +616,85 @@
                 const searchInput = document.getElementById('teacherSearch');
                 searchInput.addEventListener('input', () => {
                     const searchTerm = searchInput.value.toLowerCase();
-                    data.teachers.forEach(teacher => {
-                        const btn = data.teacherButtons[teacher.name];
-                        if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
-                            btn.style.display = 'inline-flex';
-                        } else if (btn) {
-                            btn.style.display = 'none';
+                    const now = new Date();
+                    const currentMin = now.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: data.timeZone })
+                        .split(':').map(Number).reduce((h, m) => h * 60 + m);
+                    
+                    const availableTeachers = data.teachers.filter(teacher => 
+                        data.isAvailable(teacher, now, currentMin, currentMin).available &&
+                        teacher.name.toLowerCase().includes(searchTerm)
+                    );
+
+                    const availableDiv = document.getElementById('availableTeachers');
+                    availableDiv.innerHTML = '';
+                    data.teacherButtons = {};
+
+                    if (availableTeachers.length === 0) {
+                        const p = document.createElement('p');
+                        p.textContent = searchTerm ? 'No matching teachers available right now.' : 'No teachers available right now.';
+                        availableDiv.appendChild(p);
+                    } else {
+                        availableTeachers.forEach(teacher => {
+                            const btn = document.createElement('button');
+                            btn.textContent = teacher.name;
+                            btn.className = 'teacher-btn available';
+                            btn.dataset.teacherName = teacher.name;
+                            availableDiv.appendChild(btn);
+                            data.teacherButtons[teacher.name] = btn;
+                        });
+                    }
+
+                    this.setupTeacherClicks();
+                });
+
+                searchInput.addEventListener('click', () => {
+                    const detailsDiv = document.getElementById('availabilityDetails');
+                    detailsDiv.innerHTML = '';
+                });
+            },
+
+            setupTeacherClicks() {
+                const buttons = document.querySelectorAll('.teacher-btn');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const teacherName = button.dataset.teacherName;
+                        const teacher = data.teachers.find(t => t.name === teacherName);
+                        if (teacher) {
+                            this.showWeeklyAvailability(teacher);
                         }
                     });
                 });
+            },
+
+            showWeeklyAvailability(teacher) {
+                const detailsDiv = document.getElementById('availabilityDetails');
+                detailsDiv.innerHTML = '';
+                const startDate = new Date();
+                const dayOfWeek = startDate.getDay();
+                const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                startDate.setDate(startDate.getDate() - daysToMonday);
+                
+                const weeklySchedule = data.getWeeklySchedule(teacher, startDate);
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                
+                const title = document.createElement('p');
+                title.textContent = `${teacher.name}'s Availability (Week ${this.getWeekNumber(startDate)})`;
+                title.style.fontWeight = '600';
+                detailsDiv.appendChild(title);
+
+                days.forEach(day => {
+                    const p = document.createElement('p');
+                    p.textContent = `${day}: ${weeklySchedule[day] || '-'}`;
+                    detailsDiv.appendChild(p);
+                });
+            },
+
+            getWeekNumber(date) {
+                const d = new Date(date);
+                d.setHours(0, 0, 0, 0);
+                d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+                const week1 = new Date(d.getFullYear(), 0, 4);
+                return Math.round(((d - week1) / 86400000 + 1) / 7);
             },
 
             handleCheckAvailability() {
@@ -635,7 +737,47 @@
             },
 
             handleAddEntry() {
-                alert('Entry added!');
+                const teacher = document.getElementById('extraTeacher').value;
+                const weekYear = document.getElementById('weekYear').value;
+                const minutes = document.getElementById('minutes').value;
+
+                if (teacher && weekYear && minutes) {
+                    const entries = JSON.parse(localStorage.getItem('extraMinutes') || '[]');
+                    entries.push({ teacher, weekYear, minutes: parseInt(minutes) });
+                    localStorage.setItem('extraMinutes', JSON.stringify(entries));
+                    alert('Entry added!');
+                    document.getElementById('extraTeacher').value = '';
+                    document.getElementById('weekYear').value = '';
+                    document.getElementById('minutes').value = '';
+                } else {
+                    alert('Please fill all fields.');
+                }
+            },
+
+            handleExportEntries() {
+                const entries = JSON.parse(localStorage.getItem('extraMinutes') || '[]');
+                if (entries.length === 0) {
+                    alert('No data to export.');
+                    return;
+                }
+
+                const csvContent = [
+                    'Teacher,Week/Year,Minutes',
+                    ...entries.map(entry => 
+                        `"${entry.teacher.replace(/"/g, '""')}","${entry.weekYear.replace(/"/g, '""')}",${entry.minutes}`
+                    )
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `extra_minutes_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             },
 
             setupTimeZone() {
@@ -644,6 +786,7 @@
                     data.timeZone = e.target.value;
                     ui.updateTime();
                     ui.renderTeachers();
+                    ui.setupTeacherClicks();
                 });
             }
         };
