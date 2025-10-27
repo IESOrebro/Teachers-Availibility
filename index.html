@@ -8,47 +8,34 @@
     <style>
         :root {
             /* Light mode (default) */
-            --bg-gradient: linear-gradient(135deg, #e6f0fa, #d0e1f9); /* Light blue gradient */
-            --wave-pattern: repeating-linear-gradient(
-                135deg,
-                rgba(200, 225, 245, 0.1) 0,
-                rgba(200, 225, 245, 0.1) 10px,
-                rgba(180, 210, 235, 0.1) 10px,
-                rgba(180, 210, 235, 0.1) 20px
-            ); /* Subtle wave pattern */
+            --bg-gradient: linear-gradient(135deg, #e6f0fa, #d0e1f9);
+            --wave-pattern: repeating-linear-gradient(135deg, rgba(200, 225, 245, 0.1) 0, rgba(200, 225, 245, 0.1) 10px, rgba(180, 210, 235, 0.1) 10px, rgba(180, 210, 235, 0.1) 20px);
             --container-bg: rgba(255, 255, 255, 0.95);
             --section-bg: rgba(255, 255, 255, 0.98);
             --text-color: #1a202c;
             --accent-color: #2ecc71;
             --accent-dark: #27ae60;
             --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(230, 240, 250, 0.9); /* Light blue tint */
-            --button-hover: rgba(208, 225, 249, 0.9); /* Slightly darker blue */
+            --button-bg: rgba(230, 240, 250, 0.9);
+            --button-hover: rgba(208, 225, 249, 0.9);
             --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
             --available-hover: linear-gradient(135deg, #27ae60, #219653);
             --shadow-color: rgba(46, 204, 113, 0.15);
-            --input-bg: rgba(230, 240, 250, 0.98); /* Light blue tint */
+            --input-bg: rgba(230, 240, 250, 0.98);
             --input-border: #2ecc71;
             --input-shadow: rgba(46, 204, 113, 0.1);
         }
 
         [data-theme="dark"] {
-            /* Dark mode */
-            --bg-gradient: linear-gradient(135deg, #1a2f3f, #0f1f2f); /* Darker blue gradient */
-            --wave-pattern: repeating-linear-gradient(
-                135deg,
-                rgba(15, 31, 47, 0.1) 0,
-                rgba(15, 31, 47, 0.1) 10px,
-                rgba(26, 47, 63, 0.1) 10px,
-                rgba(26, 47, 63, 0.1) 20px
-            ); /* Subtle wave pattern for dark mode */
+            --bg-gradient: linear-gradient(135deg, #1a2f3f, #0f1f2f);
+            --wave-pattern: repeating-linear-gradient(135deg, rgba(15, 31, 47, 0.1) 0, rgba(15, 31, 47, 0.1) 10px, rgba(26, 47, 63, 0.1) 10px, rgba(26, 47, 63, 0.1) 20px);
             --container-bg: rgba(26, 47, 63, 0.95);
             --section-bg: rgba(15, 31, 47, 0.98);
             --text-color: #ffffff;
             --accent-color: #2ecc71;
             --accent-dark: #27ae60;
             --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(15, 31, 47, 0.9); /* Dark blue tint */
+            --button-bg: rgba(15, 31, 47, 0.9);
             --button-hover: rgba(26, 47, 63, 0.9);
             --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
             --available-hover: linear-gradient(135deg, #27ae60, #219653);
@@ -60,8 +47,8 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-gradient), var(--wave-pattern); /* Combine gradient with wave pattern */
-            background-blend-mode: overlay; /* Subtle blending for wave effect */
+            background: var(--bg-gradient), var(--wave-pattern);
+            background-blend-mode: overlay;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -362,7 +349,7 @@
         const data = {
             teachers: [],
             teacherButtons: {},
-            currentDate: new Date('2025-10-27T09:28:00+02:00'), // Updated to 09:28 AM CET
+            currentDate: new Date('2025-10-27T09:51:00+02:00'), // Updated to 09:51 AM CET
 
             async loadFromFile() {
                 try {
@@ -387,38 +374,72 @@
             fallbackData() {
                 return [
                     { name: "Agnes Hellvig", schedule: { Monday: "Check schedule when needed", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
-                    { name: "Alan Smith", schedule: { Monday: "-;13:35-14:50", Tuesday: "-;9:20-10:30", Wednesday: "-", Thursday: "-", Friday: "-" } },
-                    { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "9:00-10:00;13:20-", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
-                    { name: "Alvinda Hall", schedule: { Monday: "9:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "9:00-10:20", Friday: "-" } },
-                    { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } }
+                    { name: "Alan Smith", schedule: { Monday: "-;13:35-14:50", Tuesday: "-;09:20-10:30", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "09:00-10:00;13:20-23:59", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
+                    { name: "Alvinda Hall", schedule: { Monday: "09:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "09:00-10:20", Friday: "-" } },
+                    { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Amanda Bergström", schedule: { Monday: "-;14:45-16:00", Tuesday: "-", Wednesday: "-;12:50-14:30", Thursday: "-", Friday: "-" } },
+                    { name: "Amra Zaklan", schedule: { Monday: "-", Tuesday: "10:15-11:25", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Angelica Norgren", schedule: { Monday: "check schedule", Tuesday: "check schedule", Wednesday: "check schedule", Thursday: "check schedule", Friday: "check schedule" } },
+                    { name: "Ann-Sofie Nordbrandt", schedule: { Monday: "09:55-10:55", Tuesday: "-;13:05-15:00", Wednesday: "10:30-11:45", Thursday: "-", Friday: "-" } },
+                    { name: "Anna Svensson", schedule: { Monday: "09:50-12:10", Tuesday: "08:00-10:55", Wednesday: "08:00-09:50", Thursday: "09:45-10:55", Friday: "-" } },
+                    { name: "Carl Ölvstam", schedule: { Monday: "-;12:30-13:55", Tuesday: "08:00-11:00;13:30-14:30", Wednesday: "10:55-12:00", Thursday: "-;13:30-14:30", Friday: "-" } },
+                    { name: "Caroline Kohl", schedule: { Monday: "-;12:05-13:20", Tuesday: "-", Wednesday: "10:30-11:30", Thursday: "-", Friday: "-" } },
+                    { name: "Catherine Asp", schedule: { Monday: "08:45-10:00", Tuesday: "-", Wednesday: "-;11:00-12:45", Thursday: "-", Friday: "-" } },
+                    { name: "Dag Mollestam", schedule: { Monday: "10:25-11:25;13:15-14:15", Tuesday: "-", Wednesday: "-;13:15-14:30", Thursday: "08:00-09:20", Friday: "-" } },
+                    { name: "Dane Söderkvist", schedule: { Monday: "08:00-09:10", Tuesday: "-;13:25-14:25", Wednesday: "09:20-10:30", Thursday: "-", Friday: "-" } },
+                    { name: "Elyssa Fors", schedule: { Monday: "08:45-10:05;13:55-15:00", Tuesday: "-;13:40-15:00", Wednesday: "-;11:35-12:50", Thursday: "-;13:50-15:30", Friday: "-" } },
+                    { name: "Fiona Olsson", schedule: { Monday: "09:20-10:20", Tuesday: "-;13:30-16:00", Wednesday: "09:20-10:30;13:15-23:59", Thursday: "09:25-11:20", Friday: "-" } },
+                    { name: "Garret Cooke", schedule: { Monday: "any of his support times", Tuesday: "any of his support times", Wednesday: "any of his support times", Thursday: "any of his support times", Friday: "any of his support times" } },
+                    { name: "Hanna Ohlsson", schedule: { Monday: "09:20-11:00;14:25-15:30", Tuesday: "09:15-11:00", Wednesday: "-;13:20-14:30", Thursday: "09:20-10:30", Friday: "-" } },
+                    { name: "Jessica Erke", schedule: { Monday: "08:00-09:50;11:00-12:05", Tuesday: "08:10-10:25", Wednesday: "10:20-11:35", Thursday: "-;08:00-09:20", Friday: "-" } },
+                    { name: "Jo-Anne Wong", schedule: { Monday: "-", Tuesday: "-", Wednesday: "-;12:50-23:59", Thursday: "09:20-10:40", Friday: "-" } },
+                    { name: "Johan Anselmius", schedule: { Monday: "09:50-11:00", Tuesday: "-;15:00-16:00", Wednesday: "09:20-10:25", Thursday: "-", Friday: "-" } },
+                    { name: "Jon Hammar", schedule: { Monday: "-", Tuesday: "08:15-09:15", Wednesday: "09:00-11:05", Thursday: "08:15-09:30", Friday: "08:00-09:15" } },
+                    { name: "Juan Ruiz", schedule: { Monday: "Check his schedule, doesn't work everyday", Tuesday: "-;12:50-14:35", Wednesday: "-;12:30-13:35", Thursday: "-", Friday: "-" } },
+                    { name: "Kayley Scrooby", schedule: { Monday: "-;12:45-14:20", Tuesday: "-", Wednesday: "09:50-11:05", Thursday: "-", Friday: "-" } },
+                    { name: "Kevin Belyea", schedule: { Monday: "-;14:50-16:00", Tuesday: "09:20-11:40", Wednesday: "-;12:00-13:40", Thursday: "08:00-09:15", Friday: "-" } },
+                    { name: "Kristoffer Sjöberg", schedule: { Monday: "08:45-10:05;13:05-14:05", Tuesday: "-;12:10-13:45", Wednesday: "11:15-12:35", Thursday: "09:40-10:50;-", Friday: "08:00-09:40" } },
+                    { name: "Lethea McCann", schedule: { Monday: "-", Tuesday: "09:20-11:25;12:40-14:50", Wednesday: "-;13:05-14:40", Thursday: "09:15-10:25", Friday: "-" } },
+                    { name: "Linda Nordh", schedule: { Monday: "-", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Linda Palmkvist", schedule: { Monday: "08:50-09:50", Tuesday: "-", Wednesday: "-;12:50-13:55", Thursday: "-", Friday: "-" } },
+                    { name: "Lisa Lonergan", schedule: { Monday: "-;12:40-14:35", Tuesday: "09:20-10:35", Wednesday: "09:35-10:55", Thursday: "09:20-11:15;-", Friday: "-;12:00-14:45" } },
+                    { name: "Michaela Japec", schedule: { Monday: "-", Tuesday: "09:15-11:45", Wednesday: "10:30-11:45", Thursday: "08:00-09:45", Friday: "-" } },
+                    { name: "Naomi Kirkvold", schedule: { Monday: "09:20-10:30;13:35-14:40", Tuesday: "09:20-10:40", Wednesday: "-;12:15-13:25", Thursday: "09:15-10:25", Friday: "-" } },
+                    { name: "Niclas Andersson", schedule: { Monday: "-", Tuesday: "-;13:40-14:30", Wednesday: "09:00-10:20", Thursday: "-;14:00-15:50", Friday: "-" } },
+                    { name: "Nina Easy Palm", schedule: { Monday: "-", Tuesday: "-;12:25-13:25", Wednesday: "-;12:40-13:40", Thursday: "-", Friday: "-" } },
+                    { name: "Patricio Caro Gonzalez", schedule: { Monday: "-", Tuesday: "-", Wednesday: "10:50-11:50", Thursday: "-", Friday: "-" } },
+                    { name: "Susanne Lundkvist", schedule: { Monday: "09:25-10:30", Tuesday: "-;12:30-14:35", Wednesday: "09:20-10:30", Thursday: "-;12:05-13:30", Friday: "-" } },
+                    { name: "Tekla Alsbjer", schedule: { Monday: "-;14:10-15:15", Tuesday: "09:20-10:25", Wednesday: "08:00-09:15", Thursday: "-;14:40-15:45", Friday: "09:15-10:30" } },
+                    { name: "Tilde Lidner", schedule: { Monday: "09:50-11:05;12:20-13:30", Tuesday: "09:20-10:25", Wednesday: "12:00-13:35", Thursday: "-;11:55-13:30", Friday: "-" } },
+                    { name: "Timothy Parcel", schedule: { Monday: "-;13:15-14:45", Tuesday: "-", Wednesday: "-;13:15-23:59", Thursday: "08:00-09:45", Friday: "-" } },
+                    { name: "Wynonah Plattner", schedule: { Monday: "Check her schedule", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Yoni Olsson", schedule: { Monday: "-;12:20-14:00", Tuesday: "09:15-10:20;14:50-16:00", Wednesday: "08:00-09:15", Thursday: "13:00-14:30", Friday: "-" } },
+                    { name: "Zlatan Jaranovic", schedule: { Monday: "10:55-12:00", Tuesday: "08:00-09:15", Wednesday: "08:00-09:30", Thursday: "-", Friday: "-" } },
+                    { name: "Zofia Czarnowska", schedule: { Monday: "-", Tuesday: "-;14:45-16:00", Wednesday: "11:20-12:30", Thursday: "11:20-12:35;14:30-16:00", Friday: "-" } }
                 ];
             },
 
-            isAvailable(teacher, checkDate) {
+            isAvailable(teacher, checkDate, fromTime, toTime) {
                 const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
                 const schedule = teacher.schedule[day] || "-";
                 if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return { available: false, ranges: [] };
                 const timeRanges = schedule.split(';').filter(range => range !== "-");
-                const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
-                const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                const [fromHour, fromMin] = [checkDate.getHours(), checkDate.getMinutes()];
-                const [toHour, toMin] = [checkDate.getHours() + 1, checkDate.getMinutes()]; // Example range, adjust based on timeTo
 
-                const availableRanges = timeRanges.filter(range => {
-                    const [start, end] = range.split('-');
-                    if (!end || end === "") return false;
+                const availableRanges = timeRanges.map(range => {
+                    let [start, end] = range.split('-');
+                    if (!end || end === "") end = "23:59"; // Handle open-ended ranges
+                    [start, end] = [start.padStart(5, '0'), end.padStart(5, '0')]; // Normalize to HH:MM
                     const [startHour, startMin] = start.split(':').map(Number);
                     const [endHour, endMin] = end.split(':').map(Number);
                     const startTime = startHour * 60 + startMin;
                     const endTime = endHour * 60 + endMin;
-                    const fromTime = fromHour * 60 + fromMin;
-                    const toTime = toHour * 60 + toMin;
-                    return startTime >= fromTime && endTime <= toTime;
-                });
+                    return { startTime, endTime, range };
+                }).filter(({ startTime, endTime }) => startTime < toTime && endTime > fromTime);
 
                 return {
                     available: availableRanges.length > 0,
-                    ranges: availableRanges
+                    ranges: availableRanges.map(r => r.range)
                 };
             }
         };
@@ -462,7 +483,7 @@
                     const btn = document.createElement('button');
                     btn.textContent = teacher.name;
                     btn.className = 'teacher-btn';
-                    if (data.isAvailable(teacher, data.currentDate).available) btn.classList.add('available');
+                    if (data.isAvailable(teacher, data.currentDate, data.currentDate.getHours() * 60 + data.currentDate.getMinutes(), (data.currentDate.getHours() + 1) * 60 + data.currentDate.getMinutes()).available) btn.classList.add('available');
                     availableDiv.appendChild(btn);
                     data.teacherButtons[teacher.name] = btn;
                 });
@@ -511,34 +532,15 @@
                     resultsDiv.innerHTML = ''; // Clear previous results
 
                     const availableTeachers = data.teachers.filter(teacher => {
-                        const schedule = teacher.schedule[day] || "-";
-                        if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
-                        const timeRanges = schedule.split(';').filter(range => range !== "-");
-                        return timeRanges.some(range => {
-                            const [start, end] = range.split('-');
-                            if (!end || end === "") return false;
-                            const [startHour, startMin] = start.split(':').map(Number);
-                            const [endHour, endMin] = end.split(':').map(Number);
-                            const startTime = startHour * 60 + startMin;
-                            const endTime = endHour * 60 + endMin;
-                            return startTime >= fromTime && endTime <= toTime;
-                        });
+                        const availability = data.isAvailable(teacher, checkDate, fromTime, toTime);
+                        return availability.available;
                     });
 
                     if (availableTeachers.length > 0) {
                         availableTeachers.forEach(teacher => {
-                            const schedule = teacher.schedule[day] || "-";
-                            const timeRanges = schedule.split(';').filter(range => range !== "-").filter(range => {
-                                const [start, end] = range.split('-');
-                                if (!end || end === "") return false;
-                                const [startHour, startMin] = start.split(':').map(Number);
-                                const [endHour, endMin] = end.split(':').map(Number);
-                                const startTime = startHour * 60 + startMin;
-                                const endTime = endHour * 60 + endMin;
-                                return startTime >= fromTime && endTime <= toTime;
-                            });
+                            const availability = data.isAvailable(teacher, checkDate, fromTime, toTime);
                             const p = document.createElement('p');
-                            p.textContent = `${teacher.name}: ${timeRanges.join(', ')}`;
+                            p.textContent = `${teacher.name}: ${availability.ranges.join(', ')}`;
                             resultsDiv.appendChild(p);
                         });
                     } else {
