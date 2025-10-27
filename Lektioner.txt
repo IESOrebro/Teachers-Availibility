@@ -8,23 +8,23 @@
   },
   "Alan Smith": {
     "Monday": "-;13:35-14:50",
-    "Tuesday": "-;9:20-10:30",
+    "Tuesday": "-;09:20-10:30",
     "Wednesday": "-",
     "Thursday": "-",
     "Friday": "-"
   },
   "Alex Reid": {
     "Monday": "-",
-    "Tuesday": "9:00-10:00;13:20-",
+    "Tuesday": "09:00-10:00;13:20-23:59",
     "Wednesday": "-",
     "Thursday": "10:55-12:15",
     "Friday": "-"
   },
   "Alvinda Hall": {
-    "Monday": "9:35-10:45;13:40-14:40",
+    "Monday": "09:35-10:45;13:40-14:40",
     "Tuesday": "-",
     "Wednesday": "12:35-14:00",
-    "Thursday": "9:00-10:20",
+    "Thursday": "09:00-10:20",
     "Friday": "-"
   },
   "Alyssa Gestrinius": {
@@ -56,22 +56,22 @@
     "Friday": "check schedule"
   },
   "Ann-Sofie Nordbrandt": {
-    "Monday": "9:55-10:55",
+    "Monday": "09:55-10:55",
     "Tuesday": "-;13:05-15:00",
     "Wednesday": "10:30-11:45",
     "Thursday": "-",
     "Friday": "-"
   },
   "Anna Svensson": {
-    "Monday": "9:50-12:10",
-    "Tuesday": "8:00-10:55",
-    "Wednesday": "8:00-9:50",
-    "Thursday": "9:45-10:55",
+    "Monday": "09:50-12:10",
+    "Tuesday": "08:00-10:55",
+    "Wednesday": "08:00-09:50",
+    "Thursday": "09:45-10:55",
     "Friday": "-"
   },
   "Carl Ölvstam": {
     "Monday": "-;12:30-13:55",
-    "Tuesday": "8:00-11:00;13:30-14:30",
+    "Tuesday": "08:00-11:00;13:30-14:30",
     "Wednesday": "10:55-12:00",
     "Thursday": "-;13:30-14:30",
     "Friday": "-"
@@ -84,7 +84,7 @@
     "Friday": "-"
   },
   "Catherine Asp": {
-    "Monday": "8:45-10:00",
+    "Monday": "08:45-10:00",
     "Tuesday": "-",
     "Wednesday": "-;11:00-12:45",
     "Thursday": "-",
@@ -94,28 +94,28 @@
     "Monday": "10:25-11:25;13:15-14:15",
     "Tuesday": "-",
     "Wednesday": "-;13:15-14:30",
-    "Thursday": "8:00-9:20",
+    "Thursday": "08:00-09:20",
     "Friday": "-"
   },
   "Dane Söderkvist": {
-    "Monday": "8:00-9:10",
+    "Monday": "08:00-09:10",
     "Tuesday": "-;13:25-14:25",
-    "Wednesday": "9:20-10:30",
+    "Wednesday": "09:20-10:30",
     "Thursday": "-",
     "Friday": "-"
   },
   "Elyssa Fors": {
-    "Monday": "8:45-10:05;13:55-15:00",
+    "Monday": "08:45-10:05;13:55-15:00",
     "Tuesday": "-;13:40-15:00",
     "Wednesday": "-;11:35-12:50",
     "Thursday": "-;13:50-15:30",
     "Friday": "-"
   },
   "Fiona Olsson": {
-    "Monday": "9:20-10:20",
+    "Monday": "09:20-10:20",
     "Tuesday": "-;13:30-16:00",
-    "Wednesday": "9:20-10:30;13:15-",
-    "Thursday": "9:25-11:20",
+    "Wednesday": "09:20-10:30;13:15-23:59",
+    "Thursday": "09:25-11:20",
     "Friday": "-"
   },
   "Garret Cooke": {
@@ -126,39 +126,39 @@
     "Friday": "any of his support times"
   },
   "Hanna Ohlsson": {
-    "Monday": "9:20-11:00;14:25-15:30",
-    "Tuesday": "9:15-11:00",
+    "Monday": "09:20-11:00;14:25-15:30",
+    "Tuesday": "09:15-11:00",
     "Wednesday": "-;13:20-14:30",
-    "Thursday": "9:20-10:30",
+    "Thursday": "09:20-10:30",
     "Friday": "-"
   },
   "Jessica Erke": {
-    "Monday": "8:00-9:50;11:00-12:05",
-    "Tuesday": "8:10-10:25",
+    "Monday": "08:00-09:50;11:00-12:05",
+    "Tuesday": "08:10-10:25",
     "Wednesday": "10:20-11:35",
-    "Thursday": "-;8:00-9:20",
+    "Thursday": "-;08:00-09:20",
     "Friday": "-"
   },
   "Jo-Anne Wong": {
     "Monday": "-",
     "Tuesday": "-",
-    "Wednesday": "-;12:50-",
-    "Thursday": "9:20-10:40",
+    "Wednesday": "-;12:50-23:59",
+    "Thursday": "09:20-10:40",
     "Friday": "-"
   },
   "Johan Anselmius": {
-    "Monday": "9:50-11:00",
+    "Monday": "09:50-11:00",
     "Tuesday": "-;15:00-16:00",
-    "Wednesday": "9:20-10:25",
+    "Wednesday": "09:20-10:25",
     "Thursday": "-",
     "Friday": "-"
   },
   "Jon Hammar": {
     "Monday": "-",
-    "Tuesday": "8:15-9:15",
-    "Wednesday": "9:00-11:05",
-    "Thursday": "8:15-9:30",
-    "Friday": "8:00-9:15"
+    "Tuesday": "08:15-09:15",
+    "Wednesday": "09:00-11:05",
+    "Thursday": "08:15-09:30",
+    "Friday": "08:00-09:15"
   },
   "Juan Ruiz": {
     "Monday": "Check his schedule, doesn't work everyday",
@@ -170,29 +170,29 @@
   "Kayley Scrooby": {
     "Monday": "-;12:45-14:20",
     "Tuesday": "-",
-    "Wednesday": "9:50-11:05",
+    "Wednesday": "09:50-11:05",
     "Thursday": "-",
     "Friday": "-"
   },
   "Kevin Belyea": {
     "Monday": "-;14:50-16:00",
-    "Tuesday": "9:20-11:40",
+    "Tuesday": "09:20-11:40",
     "Wednesday": "-;12:00-13:40",
-    "Thursday": "8:00-9:15",
+    "Thursday": "08:00-09:15",
     "Friday": "-"
   },
   "Kristoffer Sjöberg": {
-    "Monday": "8:45-10:05;13:05-14:05",
+    "Monday": "08:45-10:05;13:05-14:05",
     "Tuesday": "-;12:10-13:45",
     "Wednesday": "11:15-12:35",
-    "Thursday": "9:40-10:50;-",
-    "Friday": "8:00-9:40"
+    "Thursday": "09:40-10:50;-",
+    "Friday": "08:00-09:40"
   },
   "Lethea McCann": {
     "Monday": "-",
-    "Tuesday": "9:20-11:25;12:40-14:50",
+    "Tuesday": "09:20-11:25;12:40-14:50",
     "Wednesday": "-;13:05-14:40",
-    "Thursday": "9:15-10:25",
+    "Thursday": "09:15-10:25",
     "Friday": "-"
   },
   "Linda Nordh": {
@@ -203,7 +203,7 @@
     "Friday": "-"
   },
   "Linda Palmkvist": {
-    "Monday": "8:50-9:50",
+    "Monday": "08:50-09:50",
     "Tuesday": "-",
     "Wednesday": "-;12:50-13:55",
     "Thursday": "-",
@@ -211,29 +211,29 @@
   },
   "Lisa Lonergan": {
     "Monday": "-;12:40-14:35",
-    "Tuesday": "9:20-10:35",
-    "Wednesday": "9:35-10:55",
-    "Thursday": "9:20-11:15;-",
+    "Tuesday": "09:20-10:35",
+    "Wednesday": "09:35-10:55",
+    "Thursday": "09:20-11:15;-",
     "Friday": "-;12:00-14:45"
   },
   "Michaela Japec": {
     "Monday": "-",
-    "Tuesday": "9:15-11:45",
+    "Tuesday": "09:15-11:45",
     "Wednesday": "10:30-11:45",
-    "Thursday": "8:00-9:45",
+    "Thursday": "08:00-09:45",
     "Friday": "-"
   },
   "Naomi Kirkvold": {
-    "Monday": "9:20-10:30;13:35-14:40",
-    "Tuesday": "9:20-10:40",
+    "Monday": "09:20-10:30;13:35-14:40",
+    "Tuesday": "09:20-10:40",
     "Wednesday": "-;12:15-13:25",
-    "Thursday": "9:15-10:25",
+    "Thursday": "09:15-10:25",
     "Friday": "-"
   },
   "Niclas Andersson": {
     "Monday": "-",
     "Tuesday": "-;13:40-14:30",
-    "Wednesday": "9:00-10:20",
+    "Wednesday": "09:00-10:20",
     "Thursday": "-;14:00-15:50",
     "Friday": "-"
   },
@@ -242,7 +242,7 @@
     "Tuesday": "-;12:25-13:25",
     "Wednesday": "-;12:40-13:40",
     "Thursday": "-",
-    "Friday": "-;??"
+    "Friday": "-"
   },
   "Patricio Caro Gonzalez": {
     "Monday": "-",
@@ -252,22 +252,22 @@
     "Friday": "-"
   },
   "Susanne Lundkvist": {
-    "Monday": "9:25-10:30",
+    "Monday": "09:25-10:30",
     "Tuesday": "-;12:30-14:35",
-    "Wednesday": "9:20-10:30",
+    "Wednesday": "09:20-10:30",
     "Thursday": "-;12:05-13:30",
     "Friday": "-"
   },
   "Tekla Alsbjer": {
     "Monday": "-;14:10-15:15",
-    "Tuesday": "9:20-10:25",
-    "Wednesday": "8:00-9:15",
+    "Tuesday": "09:20-10:25",
+    "Wednesday": "08:00-09:15",
     "Thursday": "-;14:40-15:45",
-    "Friday": "9:15-10:30"
+    "Friday": "09:15-10:30"
   },
   "Tilde Lidner": {
-    "Monday": "9:50-11:05;12:20-13:30",
-    "Tuesday": "9:20-10:25",
+    "Monday": "09:50-11:05;12:20-13:30",
+    "Tuesday": "09:20-10:25",
     "Wednesday": "12:00-13:35",
     "Thursday": "-;11:55-13:30",
     "Friday": "-"
@@ -275,8 +275,8 @@
   "Timothy Parcel": {
     "Monday": "-;13:15-14:45",
     "Tuesday": "-",
-    "Wednesday": "-;13:15-",
-    "Thursday": "8:00-9:45",
+    "Wednesday": "-;13:15-23:59",
+    "Thursday": "08:00-09:45",
     "Friday": "-"
   },
   "Wynonah Plattner": {
@@ -288,15 +288,15 @@
   },
   "Yoni Olsson": {
     "Monday": "-;12:20-14:00",
-    "Tuesday": "9:15-10:20;14:50-16:00",
-    "Wednesday": "8:00-9:15",
+    "Tuesday": "09:15-10:20;14:50-16:00",
+    "Wednesday": "08:00-09:15",
     "Thursday": "13:00-14:30",
     "Friday": "-"
   },
   "Zlatan Jaranovic": {
     "Monday": "10:55-12:00",
-    "Tuesday": "8:00-9:15",
-    "Wednesday": "8:00-9:30",
+    "Tuesday": "08:00-09:15",
+    "Wednesday": "08:00-09:30",
     "Thursday": "-",
     "Friday": "-"
   },
@@ -305,6 +305,4 @@
     "Tuesday": "-;14:45-16:00",
     "Wednesday": "11:20-12:30",
     "Thursday": "11:20-12:35;14:30-16:00",
-    "Friday": "-"
-  }
-}
+    "Friday": "-
