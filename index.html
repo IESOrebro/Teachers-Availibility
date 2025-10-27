@@ -6,10 +6,9 @@
     <title>Teacher Availability</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* [Previous CSS remains unchanged] */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            background: linear-gradient(135deg, #f0f4ff, #e6eaff); /* Lighter gradient for better contrast */
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -20,20 +19,20 @@
         .container {
             max-width: 850px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.9); /* Increased opacity for brightness */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(200, 200, 255, 0.3); /* Lighter border */
         }
         h1 {
-            color: #1a202c;
+            color: #1a2a44; /* Darker blue for contrast */
             font-size: 28px;
             margin-bottom: 25px;
             text-align: center;
-            background: linear-gradient(90deg, #48bb78, #2f855a);
+            background: linear-gradient(90deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -42,18 +41,18 @@
         .section {
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.95); /* Near-full opacity for brightness */
             border-radius: 12px;
-            border-left: 6px solid #48bb78;
+            border-left: 6px solid #4ec27f; /* Brighter green border */
             backdrop-filter: blur(5px);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 15px rgba(78, 194, 127, 0.3); /* Brighter shadow */
         }
         .section h2 {
-            color: #2d3748;
+            color: #1a2a44; /* Darker text for contrast */
             font-size: 20px;
             margin-bottom: 15px;
             font-weight: 600;
@@ -66,44 +65,51 @@
         }
         .teacher-btn {
             padding: 10px 15px;
-            background: rgba(226, 232, 240, 0.8);
-            border: none;
+            background: rgba(240, 248, 255, 0.8); /* Lighter blue background */
+            border: 1px solid #4ec27f; /* Green border for visibility */
             border-radius: 20px;
             cursor: default;
             font-size: 14px;
+            color: #1a2a44; /* Dark text for contrast */
+            font-weight: 500; /* Slightly bolder text */
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
             white-space: normal;
             text-align: center;
             min-width: 100px;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5); /* Slight white glow for brightness */
         }
         .teacher-btn.available {
-            background: linear-gradient(135deg, #48bb78, #2f855a);
-            color: white;
+            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
+            color: #ffffff; /* White text for maximum contrast */
             font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            border: 1px solid #2f9b5e; /* Darker green border */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
         }
         .teacher-btn:hover {
-            background: rgba(203, 213, 224, 0.9);
+            background: rgba(200, 230, 255, 0.9); /* Lighter hover color */
             transform: scale(1.05);
+            color: #1a2a44; /* Dark text on hover */
         }
         .teacher-btn.available:hover {
-            background: linear-gradient(135deg, #38a169, #276749);
+            background: linear-gradient(135deg, #5fd893, #2f9b5e); /* Even brighter hover gradient */
+            color: #ffffff; /* Keep white text */
         }
         .search-bar {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: none;
+            border: 1px solid #4ec27f; /* Green border */
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.95); /* Brighter background */
+            box-shadow: inset 0 2px 4px rgba(78, 194, 127, 0.1); /* Subtle green shadow */
             font-size: 14px;
+            color: #1a2a44; /* Dark text */
             transition: box-shadow 0.2s ease;
         }
         .search-bar:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(72, 187, 120, 0.2);
+            box-shadow: inset 0 2px 6px rgba(78, 194, 127, 0.3); /* Brighter focus shadow */
         }
         .form-group {
             margin-bottom: 15px;
@@ -112,27 +118,28 @@
             display: block;
             font-weight: 500;
             margin-bottom: 6px;
-            color: #4a5568;
+            color: #1a2a44; /* Darker label text */
             font-size: 14px;
         }
         .form-group input, .form-group select {
             padding: 10px;
             width: 220px;
-            border: none;
+            border: 1px solid #4ec27f; /* Green border */
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.95); /* Brighter background */
+            box-shadow: inset 0 2px 4px rgba(78, 194, 127, 0.1); /* Subtle shadow */
             font-size: 14px;
+            color: #1a2a44; /* Dark text */
             transition: box-shadow 0.2s ease;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(72, 187, 120, 0.2);
+            box-shadow: inset 0 2px 6px rgba(78, 194, 127, 0.3); /* Brighter focus shadow */
         }
         button {
             padding: 12px 25px;
-            background: linear-gradient(135deg, #48bb78, #2f855a);
-            color: white;
+            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
+            color: #ffffff; /* White text */
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -142,7 +149,7 @@
         }
         button:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #38a169, #276749);
+            background: linear-gradient(135deg, #5fd893, #2f9b5e); /* Brighter hover gradient */
         }
         .totals {
             display: flex;
@@ -153,25 +160,25 @@
         }
         .totals button {
             padding: 8px 15px;
-            background: rgba(237, 242, 247, 0.8);
-            color: #2d3748;
-            border: none;
+            background: rgba(240, 248, 255, 0.8); /* Lighter blue background */
+            color: #1a2a44; /* Dark text */
+            border: 1px solid #4ec27f; /* Green border */
             border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
             transition: all 0.3s ease;
         }
         .totals button:hover {
-            background: rgba(203, 213, 224, 0.9);
+            background: rgba(200, 230, 255, 0.9); /* Lighter hover color */
             transform: scale(1.1);
         }
         .totals button.active {
-            background: linear-gradient(135deg, #48bb78, #2f855a);
-            color: white;
+            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter active gradient */
+            color: #ffffff; /* White text */
         }
         p {
             font-size: 14px;
-            color: #718096;
+            color: #1a2a44; /* Darker paragraph text */
             margin: 5px 0;
             text-align: center;
         }
@@ -243,7 +250,7 @@
         const data = {
             teachers: [],
             teacherButtons: {},
-            currentDate: new Date('2025-10-27T08:53:00+02:00'), // Updated to 08:53 AM CET
+            currentDate: new Date('2025-10-27T09:10:00+02:00'), // Updated to 09:10 AM CET
 
             async loadFromFile() {
                 try {
@@ -252,9 +259,9 @@
                         throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
                     }
                     const text = await response.text();
-                    console.log('Fetched data:', text); // Debug: Log the raw fetched data
+                    console.log('Fetched data:', text);
                     const schedule = JSON.parse(text);
-                    console.log('Parsed schedule:', schedule); // Debug: Log the parsed JSON
+                    console.log('Parsed schedule:', schedule);
                     return Object.entries(schedule).map(([name, days]) => ({
                         name,
                         schedule: days
@@ -272,7 +279,6 @@
                     { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "9:00-10:00;13:20-", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
                     { name: "Alvinda Hall", schedule: { Monday: "9:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "9:00-10:20", Friday: "-" } },
                     { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } }
-                    // Expand with full list if needed
                 ];
             },
 
@@ -285,115 +291,4 @@
                 const [hour, minute] = [now.getHours(), now.getMinutes()];
                 const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-                return timeRanges.some(range => {
-                    const [start, end] = range.split('-');
-                    if (!end || end === "") return false; // Treat incomplete ranges as unavailable
-                    const [startHour, startMin] = start.split(':').map(Number);
-                    const [endHour, endMin] = end.split(':').map(Number);
-                    const startTime = startHour * 60 + startMin;
-                    const endTime = endHour * 60 + endMin;
-                    const currentTotalMin = hour * 60 + minute;
-                    return currentTotalMin >= startTime && currentTotalMin <= endTime;
-                });
-            }
-        };
-
-        // UI Module
-        const ui = {
-            init() {
-                this.updateTime();
-                data.loadFromFile().then(teachers => {
-                    data.teachers = teachers;
-                    console.log('Loaded teachers:', teachers); // Debug: Log the loaded teachers
-                    this.renderTeachers();
-                    this.renderDropdown();
-                    this.setupSearch();
-                }).catch(error => console.error('Error in init:', error));
-            },
-
-            updateTime() {
-                const timeElement = document.getElementById('availabilityTime');
-                const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'CET', timeZoneName: 'short' };
-                timeElement.textContent = `Available as of ${data.currentDate.toLocaleTimeString('en-US', options)} (showing monthly totals: Week: 2025-W43 / Month: 2025-10)`;
-            },
-
-            renderTeachers() {
-                const availableDiv = document.getElementById('availableTeachers');
-                availableDiv.innerHTML = '';
-                data.teacherButtons = {};
-                data.teachers.forEach(teacher => {
-                    const btn = document.createElement('button');
-                    btn.textContent = teacher.name;
-                    btn.className = 'teacher-btn';
-                    if (data.isAvailable(teacher)) btn.classList.add('available');
-                    availableDiv.appendChild(btn);
-                    data.teacherButtons[teacher.name] = btn;
-                });
-            },
-
-            renderDropdown() {
-                const select = document.getElementById('extraTeacher');
-                select.innerHTML = '<option value="">-- Select a teacher --</option>';
-                data.teachers.forEach(teacher => {
-                    const option = document.createElement('option');
-                    option.value = teacher.name;
-                    option.textContent = teacher.name;
-                    select.appendChild(option);
-                });
-            },
-
-            setupSearch() {
-                const searchInput = document.getElementById('teacherSearch');
-                searchInput.addEventListener('input', () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    data.teachers.forEach(teacher => {
-                        const btn = data.teacherButtons[teacher.name];
-                        if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
-                            btn.style.display = 'inline-flex';
-                        } else if (btn) {
-                            btn.style.display = 'none';
-                        }
-                    });
-                });
-            },
-
-            handleCheckAvailability() {
-                const date = document.getElementById('checkDate').value;
-                const timeFrom = document.getElementById('timeFrom').value;
-                const timeTo = document.getElementById('timeTo').value;
-                if (date && timeFrom && timeTo) {
-                    const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
-                    const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
-                    const available = data.teachers.filter(t => {
-                        const schedule = t.schedule[day] || "-";
-                        if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
-                        const timeRanges = schedule.split(';').filter(range => range !== "-");
-                        const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
-                        const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                        return timeRanges.some(range => {
-                            const [start, end] = range.split('-');
-                            if (!end || end === "") return false;
-                            const [startHour, startMin] = start.split(':').map(Number);
-                            const [endHour, endMin] = end.split(':').map(Number);
-                            const startTime = startHour * 60 + startMin;
-                            const endTime = endHour * 60 + endMin;
-                            const currentTotalMin = hour * 60 + minute;
-                            return currentTotalMin >= startTime && currentTotalMin <= endTime;
-                        });
-                    }).map(t => t.name);
-                    alert(`Available teachers: ${available.join(', ') || 'None'}`);
-                } else {
-                    alert('Please fill all fields.');
-                }
-            },
-
-            handleAddEntry() {
-                alert('Entry added!');
-            }
-        };
-
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => ui.init());
-    </script>
-</body>
-</html>
+                return timeRanges.some(range
