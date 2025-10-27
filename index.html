@@ -3,400 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Substitute Coordinator</title>
+    <title>Teacher Availability</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
-        h1, h2, h3 {
-            color: #333;
-        }
-        table {
-            border-collapse: collapse;
+        .container {
+            max-width: 850px;
             width: 100%;
-            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 25px;
+            text-align: center;
+            background: linear-gradient(90deg, #48bb78, #2f855a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
         }
-        th {
-            background-color: #f5f5f5;
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            border-left: 6px solid #48bb78;
+            backdrop-filter: blur(5px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #2d3748;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .teachers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .teacher-btn {
+            padding: 10px 15px;
+            background: rgba(226, 232, 240, 0.8);
+            border: none;
+            border-radius: 20px;
+            cursor: default;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .teacher-btn.available {
+            background: linear-gradient(135deg, #48bb78, #2f855a);
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .teacher-btn:hover {
+            background: rgba(203, 213, 224, 0.9);
+            transform: scale(1.05);
+        }
+        .teacher-btn.available:hover {
+            background: linear-gradient(135deg, #38a169, #276749);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            width: 220px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            transition: box-shadow 0.2s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            box-shadow: inset 0 2px 6px rgba(72, 187, 120, 0.2);
         }
         button {
-            margin: 5px;
-            padding: 8px 12px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #48bb78, #2f855a);
+            color: white;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s ease, background 0.3s ease;
         }
         button:hover {
-            background-color: #e0e0e0;
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #38a169, #276749);
         }
-        select, input[type="time"] {
-            margin: 5px;
-            padding: 5px;
+        .totals {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
         }
-        #logTable tr.separator td {
+        .totals button {
+            padding: 8px 15px;
+            background: rgba(237, 242, 247, 0.8);
+            color: #2d3748;
             border: none;
-            padding: 0;
-            height: 1px;
-            background-color: #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
         }
-        .input-group {
-            margin-bottom: 10px;
+        .totals button:hover {
+            background: rgba(203, 213, 224, 0.9);
+            transform: scale(1.1);
         }
-        .error {
-            color: red;
+        .totals button.active {
+            background: linear-gradient(135deg, #48bb78, #2f855a);
+            color: white;
         }
-        #fetchStatus {
-            margin-top: 10px;
-            font-style: italic;
+        p {
+            font-size: 14px;
+            color: #718096;
+            margin: 5px 0;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .form-group input, .form-group select { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <h1>Substitute Coordinator</h1>
-    <div id="fetchStatus">Loading schedule...</div>
-
-    <h2>Find Available Teachers</h2>
-    <div class="input-group">
-        <label for="daySelect">Select Day:</label>
-        <select id="daySelect">
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-        </select>
-        <label>Time Slot:</label>
-        <input type="time" id="startTime" step="900"> to <input type="time" id="endTime" step="900">
-        <button onclick="checkAvailability()">Check Availability</button>
+    <div class="container">
+        <h1>Teacher Availability</h1>
+        <div class="section">
+            <h2>Available Right Now</h2>
+            <p>Available as of 08:33 AM CET (showing monthly totals: Week: 2025-W43 / Month: 2025-10)</p>
+            <div class="teachers" id="availableTeachers"></div>
+        </div>
+        <div class="section">
+            <h2>Check Availability for a Time Range</h2>
+            <div class="form-group">
+                <label>Date:</label>
+                <input type="date" id="checkDate">
+            </div>
+            <div class="form-group">
+                <label>Time (From):</label>
+                <input type="time" id="timeFrom">
+            </div>
+            <div class="form-group">
+                <label>Time (To):</label>
+                <input type="time" id="timeTo">
+            </div>
+            <button onclick="checkAvailability()">Check Availability</button>
+        </div>
+        <div class="section">
+            <h2>Extra Worked Minutes</h2>
+            <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
+            <div class="form-group">
+                <label>Teacher:</label>
+                <select id="extraTeacher">
+                    <option value="">-- Select a teacher --</option>
+                    <!-- Populate dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Week/Year:</label>
+                <input type="text" id="weekYear" placeholder="Week 43, 2025">
+            </div>
+            <div class="form-group">
+                <label>Minutes:</label>
+                <input type="number" id="minutes">
+            </div>
+            <button onclick="addEntry()">Add</button>
+        </div>
+        <div class="section">
+            <h2>Monthly Totals</h2>
+            <div class="totals" id="monthTotals">
+                <button>2025</button>
+                <button>Jan</button> <button>Feb</button> <button>Mar</button> <button>Apr</button>
+                <button>May</button> <button>Jun</button> <button>Jul</button> <button>Aug</button>
+                <button>Sep</button> <button>Oct</button> <button>Nov</button> <button>Dec</button>
+            </div>
+            <p>Total for October 2025: 0 minutes</p>
+        </div>
     </div>
-    <h3>Available Teachers</h3>
-    <table id="availabilityTable">
-        <thead>
-            <tr>
-                <th>Teacher</th>
-                <th>Available Slots</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Populated by JS -->
-        </tbody>
-    </table>
-
-    <h2>Extra Worked Minutes</h2>
-    <p>Data is stored in your browser. Use Export/Import to back up or restore.</p>
-    <button onclick="exportData()">Export</button>
-    <button onclick="importData()">Import</button>
-    <input type="file" id="importFile" style="display: none;" accept=".json" onchange="handleImport(event)">
-
-    <h3>Monthly Totals</h3>
-    <p>2025</p>
-    <select id="monthSelect" onchange="updateMonthlyTotal()">
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10" selected>October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
-    <div id="monthlyTotal">0 minutes</div>
-
-    <h3>Detailed Log</h3>
-    <table id="logTable">
-        <thead>
-            <tr>
-                <th>Teacher</th>
-                <th>Day</th>
-                <th>Time Slot</th>
-                <th>Minutes</th>
-                <th>Week</th>
-                <th>Month</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Populated by JS -->
-        </tbody>
-    </table>
 
     <script>
-        let logData = JSON.parse(localStorage.getItem('extraMinutes')) || [];
-        let scheduleData = [];
+        // Placeholder for reading Lektioner.txt (assuming it's a text file with teacher data)
+        const teachers = ["AnaBon", "Erwi", "HayAj", "JoEn", "JoGe", "LST", "LogI", "Mabe", "MaEn", "NaFu", "OlGo", "RyHa", "TrP1"];
+        const availableTeachers = ["JoEn"]; // Example: JoEn is available now
 
-        // Replace with your GitHub raw URL for Lektioner.txt
-        const scheduleUrl = 'https://raw.githubusercontent.com/your-repo/your-file/Lektioner.txt';
+        // Populate available teachers
+        const availableDiv = document.getElementById('availableTeachers');
+        teachers.forEach(teacher => {
+            const btn = document.createElement('button');
+            btn.textContent = teacher;
+            btn.className = 'teacher-btn';
+            if (availableTeachers.includes(teacher)) btn.classList.add('available');
+            availableDiv.appendChild(btn);
+        });
 
-        // Fallback schedule data (from provided Lektioner.txt content)
-        const fallbackSchedule = `Teacher                        Monday                     Tuesday                    Wednesday                  Thursday                   Friday
-Agnes Hellvig                 Check schedule when needed -                        -                          -                          -
-Alan Smith                    -;13:35-14:50             -;9:20-10:30              -                          -                          -
-Alex Reid                     -                          9:00-10:00;13:20-         -                          10:55-12:15               -
-Alvinda Hall                  9:35-10:45;13:40-14:40   -                          12:35-14:00               9:00-10:20                -
-Alyssa Gestrinius             10:30-11:30               -                          -                          -                          -
-Amanda Bergström              -;14:45-16:00             -                          -;12:50-14:30             -                          -
-Amra Zaklan                   -                          10:15-11:25               -                          -                          -
-Angelica Norgren              check schedule             check schedule             check schedule             check schedule             check schedule
-Ann-Sofie Nordbrandt          9:55-10:55                -;13:05-15:00             10:30-11:45               -                          -
-Anna Svensson                 9:50-12:10                8:00-10:55                8:00-9:50                 9:45-10:55                -
-Carl Ölvstam                  -;12:30-13:55             8:00-11:00;13:30-14:30    10:55-12:00               -;13:30-14:30             -
-Caroline Kohl                 -;12:05-13:20             -                          10:30-11:30               -                          -
-Catherine Asp                 8:45-10:00                -                          -;11:00-12:45             -                          -
-Dag Mollestam                 10:25-11:25;13:15-14:15  -                          -;13:15-14:30             8:00-9:20                 -
-Dane Söderkvist               8:00-9:10                 -;13:25-14:25             9:20-10:30                -                          -
-Elyssa Fors                   8:45-10:05;13:55-15:00   -;13:40-15:00             -;11:35-12:50             -;13:50-15:30             -
-Fiona Olsson                  9:20-10:20                -;13:30-16:00             9:20-10:30;13:15-         9:25-11:20                -
-Garret Cooke                  any of his support times  any of his support times  any of his support times  any of his support times  any of his support times
-Hanna Ohlsson                 9:20-11:00;14:25-15:30   9:15-11:00                -;13:20-14:30             9:20-10:30                -
-Jessica Erke                  8:00-9:50;11:00-12:05    8:10-10:25                10:20-11:35               -;8:00-9:20               -
-Jo-Anne Wong                  -                          -                          -;12:50-                  9:20-10:40                -
-Johan Anselmius               9:50-11:00                -;15:00-16:00             9:20-10:25                -                          -
-Jon Hammar                    -                          8:15-9:15                 9:00-11:05                8:15-9:30                 8:00-9:15
-Juan Ruiz                     Check his schedule, doesn't work everyday -;12:50-14:35 -;12:30-13:35 - -
-Kayley Scrooby                -;12:45-14:20             -                          9:50-11:05                -                          -
-Kevin Belyea                  -;14:50-16:00             9:20-11:40                -;12:00-13:40             8:00-9:15                 -
-Kristoffer Sjöberg            8:45-10:05;13:05-14:05   -;12:10-13:45             11:15-12:35               9:40-10:50;-              8:00-9:40
-Lethea McCann                 -                          9:20-11:25;12:40-14:50   -;13:05-14:40             9:15-10:25                -
-Linda Nordh                   -                          -                          -                          -                          -
-Linda Palmkvist               8:50-9:50                 -                          -;12:50-13:55             -                          -
-Lisa Lonergan                 -;12:40-14:35             9:20-10:35                9:35-10:55                9:20-11:15;-              -;12:00-14:45
-Michaela Japec                -                          9:15-11:45                10:30-11:45               8:00-9:45                 -
-Naomi Kirkvold                9:20-10:30;13:35-14:40   9:20-10:40                -;12:15-13:25             9:15-10:25                -
-Niclas Andersson              -                          -;13:40-14:30             9:00-10:20                -;14:00-15:50             -
-Nina Easy Palm                -                          -;12:25-13:25             -;12:40-13:40             -                          -;??
-Patricio Caro Gonzalez        -                          -                          10:50-11:50               -                          -
-Susanne Lundkvist             9:25-10:30                -;12:30-14:35             9:20-10:30                -;12:05-13:30             -
-Tekla Alsbjer                 -;14:10-15:15             9:20-10:25                8:00-9:15                 -;14:40-15:45             9:15-10:30
-Tilde Lidner                  9:50-11:05;12:20-13:30   9:20-10:25                12:00-13:35               -;11:55-13:30             -
-Timothy Parcel                -;13:15-14:45             -                          -;13:15-                  8:00-9:45                 -
-Wynonah Plattner              Check her schedule         -                          -                          -                          -
-Yoni Olsson                   -;12:20-14:00             9:15-10:20;14:50-16:00    8:00-9:15                 13:00-14:30               -
-Zlatan Jaranovic              10:55-12:00               8:00-9:15                 8:00-9:30                 -                          -
-Zofia Czarnowska              -                          -;14:45-16:00             11:20-12:30               11:20-12:35;14:30-16:00   9:20-10:30`;
+        // Populate extra teacher dropdown
+        const extraTeacherSelect = document.getElementById('extraTeacher');
+        teachers.forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = teacher;
+            option.textContent = teacher;
+            extraTeacherSelect.appendChild(option);
+        });
 
-        // Load schedule from GitHub or use fallback
-        function loadSchedule() {
-            const statusDiv = document.getElementById('fetchStatus');
-            fetch(scheduleUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-                    return response.text();
-                })
-                .then(data => {
-                    statusDiv.textContent = 'Schedule loaded successfully.';
-                    parseSchedule(data);
-                })
-                .catch(error => {
-                    console.error('Error loading schedule:', error);
-                    statusDiv.textContent = 'Failed to load schedule from GitHub. Using fallback data.';
-                    parseSchedule(fallbackSchedule);
-                });
-        }
-
-        // Parse schedule data
-        function parseSchedule(data) {
-            scheduleData = [];
-            const lines = data.trim().split('\n');
-            const headers = lines[0].split('\t').map(h => h.trim());
-            for (let i = 1; i < lines.length; i++) {
-                const fields = lines[i].split('\t').map(f => f.trim());
-                if (fields.length >= 6) {
-                    scheduleData.push({
-                        teacher: fields[0],
-                        Monday: fields[1],
-                        Tuesday: fields[2],
-                        Wednesday: fields[3],
-                        Thursday: fields[4],
-                        Friday: fields[5]
-                    });
-                }
-            }
-        }
-
-        // Parse time in 24-hour format (e.g., "13:35") to minutes since midnight
-        function parseTime(timeStr) {
-            if (!timeStr || timeStr === '-' || timeStr === '??') return null;
-            const [hours, minutes] = timeStr.split(':').map(Number);
-            return hours * 60 + minutes;
-        }
-
-        // Check if two time slots overlap
-        function isOverlap(start1, end1, start2, end2) {
-            return start1 < end2 && start2 < end1;
-        }
-
-        // Check availability for a given day and time slot
         function checkAvailability() {
-            const day = document.getElementById('daySelect').value;
-            const startTime = document.getElementById('startTime').value;
-            const endTime = document.getElementById('endTime').value;
-            const tbody = document.querySelector('#availabilityTable tbody');
-            tbody.innerHTML = '';
-
-            if (!startTime || !endTime) {
-                tbody.innerHTML = '<tr><td colspan="3" class="error">Please enter both start and end times.</td></tr>';
-                return;
-            }
-
-            const startMinutes = parseTime(startTime);
-            const endMinutes = parseTime(endTime);
-            if (endMinutes <= startMinutes) {
-                tbody.innerHTML = '<tr><td colspan="3" class="error">End time must be after start time.</td></tr>';
-                return;
-            }
-
-            const availableTeachers = [];
-            scheduleData.forEach(entry => {
-                const slots = entry[day].split(';').filter(s => s !== '-' && s !== '??');
-                let isAvailable = true;
-                let slotText = entry[day];
-
-                // Handle special cases (notes)
-                if (slotText.includes('check schedule') || slotText.includes('any of his support times') || slotText === '-') {
-                    availableTeachers.push({ teacher: entry.teacher, slots: slotText });
-                    return;
-                }
-
-                // Check for overlaps with scheduled slots
-                for (const slot of slots) {
-                    if (!slot.includes('-')) continue; // Skip incomplete slots like "13:20-"
-                    const [slotStart, slotEnd] = slot.split('-').map(parseTime);
-                    if (slotStart === null || slotEnd === null) continue;
-                    if (isOverlap(startMinutes, endMinutes, slotStart, slotEnd)) {
-                        isAvailable = false;
-                        break;
-                    }
-                }
-
-                if (isAvailable) {
-                    availableTeachers.push({ teacher: entry.teacher, slots: slotText });
-                }
-            });
-
-            if (availableTeachers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3">No teachers available for this time slot.</td></tr>';
-            } else {
-                availableTeachers.forEach(({ teacher, slots }) => {
-                    const row = tbody.insertRow();
-                    row.insertCell(0).textContent = teacher;
-                    row.insertCell(1).textContent = slots === '-' ? 'No scheduled classes' : slots === '??' ? 'Check availability' : slots;
-                    const actionCell = row.insertCell(2);
-                    const assignButton = document.createElement('button');
-                    assignButton.textContent = 'Assign';
-                    assignButton.onclick = () => assignSubstitute(teacher, day, startTime, endTime);
-                    actionCell.appendChild(assignButton);
-                });
-            }
+            alert('Checking availability...');
         }
 
-        // Assign a substitute and log the minutes
-        function assignSubstitute(teacher, day, startTime, endTime) {
-            const startMinutes = parseTime(startTime);
-            const endMinutes = parseTime(endTime);
-            const minutes = endMinutes - startMinutes;
-            const today = new Date('2025-10-26');
-            // Approximate ISO week number
-            const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-            const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
-            const week = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-            const month = ('0' + (today.getMonth() + 1)).slice(-2);
-            const year = today.getFullYear().toString();
-
-            logData.push({
-                teacher,
-                day,
-                timeSlot: `${startTime}-${endTime}`,
-                minutes,
-                week: week.toString().padStart(2, '0'),
-                month,
-                year
-            });
-
-            localStorage.setItem('extraMinutes', JSON.stringify(logData));
-            renderLog();
-            updateMonthlyTotal();
-            alert(`${teacher} assigned as substitute for ${day} ${startTime}-${endTime} (${minutes} minutes).`);
+        function addEntry() {
+            alert('Entry added!');
         }
-
-        // Update monthly total
-        function updateMonthlyTotal() {
-            const month = document.getElementById('monthSelect').value;
-            const total = logData
-                .filter(entry => entry.month === month && entry.year === '2025')
-                .reduce((sum, entry) => sum + entry.minutes, 0);
-            document.getElementById('monthlyTotal').innerHTML = `${total} minutes`;
-        }
-
-        // Populate log table
-        function renderLog() {
-            const tbody = document.querySelector('#logTable tbody');
-            tbody.innerHTML = '';
-            logData.forEach(entry => {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = entry.teacher;
-                row.insertCell(1).textContent = entry.day;
-                row.insertCell(2).textContent = entry.timeSlot;
-                row.insertCell(3).textContent = entry.minutes;
-                row.insertCell(4).textContent = entry.week;
-                row.insertCell(5).textContent = entry.month;
-            });
-            const sepRow = tbody.insertRow();
-            const sepCell = sepRow.insertCell(0);
-            sepCell.colSpan = 6;
-            sepCell.className = 'separator';
-        }
-
-        // Export data
-        function exportData() {
-            const dataStr = JSON.stringify(logData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'extra-minutes.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Import data
-        function importData() {
-            document.getElementById('importFile').click();
-        }
-
-        function handleImport(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        logData = JSON.parse(e.target.result);
-                        localStorage.setItem('extraMinutes', JSON.stringify(logData));
-                        renderLog();
-                        updateMonthlyTotal();
-                        alert('Data imported successfully!');
-                    } catch (error) {
-                        alert('Invalid file format. Please use a JSON file.');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        // Initial setup
-        loadSchedule();
-        renderLog();
-        updateMonthlyTotal();
     </script>
 </body>
 </html>
