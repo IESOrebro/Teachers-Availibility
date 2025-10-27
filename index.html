@@ -447,7 +447,7 @@
                     const startTime = startHour * 60 + startMin;
                     const endTime = endHour * 60 + endMin;
                     return { startTime, endTime, range };
-                }).filter(({ startTime, endTime }) => startTime === fromTime && endTime === toTime);
+                }).filter(({ startTime, endTime }) => startTime >= fromTime && endTime <= toTime);
 
                 return {
                     available: availableRanges.length > 0,
@@ -492,12 +492,12 @@
                 const availableDiv = document.getElementById('availableTeachers');
                 availableDiv.innerHTML = '';
                 data.teacherButtons = {};
+                const currentMin = new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: data.timeZone })
+                    .split(':').map(Number).reduce((h, m) => h * 60 + m);
                 data.teachers.forEach(teacher => {
                     const btn = document.createElement('button');
                     btn.textContent = teacher.name;
                     btn.className = 'teacher-btn';
-                    const currentMin = new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: data.timeZone })
-                        .split(':').map(Number).reduce((h, m) => h * 60 + m);
                     if (data.isAvailable(teacher, new Date(), currentMin, currentMin + 60).available) btn.classList.add('available');
                     availableDiv.appendChild(btn);
                     data.teacherButtons[teacher.name] = btn;
@@ -561,7 +561,7 @@
                         });
                     } else {
                         const p = document.createElement('p');
-                        p.textContent = 'No teachers available for the exact time range.';
+                        p.textContent = 'No teachers available for the selected time range.';
                         resultsDiv.appendChild(p);
                     }
                 } else {
