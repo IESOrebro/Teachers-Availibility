@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Availability</title>
+    <title>IES Örebro Teacher Availability Dashboard</title> <!-- Changed: Updated title -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Light mode (default) */
-            --bg-gradient: linear-gradient(135deg, #e6f0fa, #b0d0f8 50%, #d0e1f9);
-            --wave-pattern: repeating-linear-gradient(135deg, rgba(200, 225, 245, 0.05) 0, rgba(200, 225, 245, 0.05) 20px, rgba(180, 210, 235, 0.05) 20px, rgba(180, 210, 235, 0.05) 40px);
-            --container-bg: rgba(255, 255, 255, 0.95);
-            --section-bg: rgba(255, 255, 255, 0.98);
-            --text-color: rgba(26, 32, 44, 0.9);
-            --accent-color: #2ecc71;
-            --accent-dark: #27ae60;
-            --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(230, 240, 250, 0.9);
-            --button-hover: rgba(208, 225, 249, 0.9);
-            --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
-            --available-hover: linear-gradient(135deg, #27ae60, #219653);
-            --shadow-color: rgba(46, 204, 113, 0.15);
-            --input-bg: rgba(230, 240, 250, 0.98);
-            --input-border: #2ecc71;
-            --input-shadow: rgba(46, 204, 113, 0.1);
+            --bg-gradient: linear-gradient(135deg, #f0f4ff, #c3daff 50%, #e0eaff);
+            --wave-pattern: repeating-linear-gradient(135deg, rgba(200, 225, 245, 0.1) 0, rgba(200, 225, 245, 0.1) 20px, rgba(180, 210, 235, 0.1) 20px, rgba(180, 210, 235, 0.1) 40px);
+            --container-bg: rgba(255, 255, 255, 0.97);
+            --section-bg: rgba(255, 255, 255, 0.99);
+            --text-color: #1a202c;
+            --accent-color: #34d399;
+            --accent-dark: #059669;
+            --border-color: rgba(52, 211, 153, 0.3);
+            --button-bg: rgba(240, 244, 255, 0.95);
+            --button-hover: rgba(224, 234, 255, 0.95);
+            --available-bg: linear-gradient(135deg, #34d399, #059669);
+            --available-hover: linear-gradient(135deg, #059669, #047857);
+            --shadow-color: rgba(52, 211, 153, 0.2);
+            --input-bg: rgba(245, 248, 255, 0.98);
+            --input-border: #34d399;
+            --input-shadow: rgba(52, 211, 153, 0.15);
         }
 
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(135deg, #1a2f3f, #0f1f2f);
-            --wave-pattern: repeating-linear-gradient(135deg, rgba(15, 31, 47, 0.05) 0, rgba(15, 31, 47, 0.05) 20px, rgba(26, 47, 63, 0.05) 20px, rgba(26, 47, 63, 0.05) 40px);
-            --container-bg: rgba(26, 47, 63, 0.95);
-            --section-bg: rgba(15, 31, 47, 0.98);
-            --text-color: rgba(255, 255, 255, 0.95);
-            --accent-color: #2ecc71;
-            --accent-dark: #27ae60;
-            --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(15, 31, 47, 0.9);
-            --button-hover: rgba(26, 47, 63, 0.9);
-            --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
-            --available-hover: linear-gradient(135deg, #27ae60, #219653);
-            --shadow-color: rgba(46, 204, 113, 0.15);
-            --input-bg: rgba(15, 31, 47, 0.98);
-            --input-border: #2ecc71;
-            --input-shadow: rgba(46, 204, 113, 0.1);
+            --bg-gradient: linear-gradient(135deg, #1e3a8a, #0f172a);
+            --wave-pattern: repeating-linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0, rgba(30, 58, 138, 0.1) 20px, rgba(55, 65, 81, 0.1) 20px, rgba(55, 65, 81, 0.1) 40px);
+            --container-bg: rgba(31, 41, 55, 0.97);
+            --section-bg: rgba(17, 24, 39, 0.99);
+            --text-color: #f3f4f6;
+            --accent-color: #34d399;
+            --accent-dark: #059669;
+            --border-color: rgba(52, 211, 153, 0.3);
+            --button-bg: rgba(31, 41, 55, 0.95);
+            --button-hover: rgba(55, 65, 81, 0.95);
+            --available-bg: linear-gradient(135deg, #34d399, #059669);
+            --available-hover: linear-gradient(135deg, #059669, #047857);
+            --shadow-color: rgba(52, 211, 153, 0.2);
+            --input-bg: rgba(31, 41, 55, 0.98);
+            --input-border: #34d399;
+            --input-shadow: rgba(52, 211, 153, 0.15);
         }
 
         body {
@@ -50,31 +50,37 @@
             background: var(--bg-gradient), var(--wave-pattern);
             background-blend-mode: overlay;
             margin: 0;
-            padding: 20px;
+            padding: 30px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             transition: background 0.3s ease;
         }
+
         .container {
-            max-width: 850px;
+            max-width: 900px;
             width: 100%;
             background: var(--container-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-color);
             max-height: 90vh;
             overflow-y: auto;
-            transition: background 0.3s ease, border 0.3s ease;
+            transition: background 0.3s ease, border 0.3s ease, transform 0.2s ease;
         }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
         h1 {
             color: var(--text-color);
-            font-size: 32px;
-            margin-bottom: 25px;
+            font-size: 36px;
+            margin-bottom: 30px;
             text-align: center;
             background: linear-gradient(90deg, var(--accent-color), var(--accent-dark));
             -webkit-background-clip: text;
@@ -82,207 +88,310 @@
             color: transparent;
             font-weight: 700;
         }
+
         .dark-mode-toggle {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             display: flex;
             align-items: center;
         }
+
         .dark-mode-toggle label {
             color: var(--text-color);
-            margin-right: 10px;
-            font-size: 14px;
+            margin-right: 12px;
+            font-size: 15px;
+            font-weight: 500;
         }
+
         .dark-mode-toggle input {
             appearance: none;
-            width: 50px;
-            height: 25px;
+            width: 54px;
+            height: 28px;
             background: var(--button-bg);
-            border-radius: 15px;
+            border-radius: 16px;
             position: relative;
             cursor: pointer;
             transition: background 0.3s ease;
         }
+
         .dark-mode-toggle input::before {
             content: '';
             position: absolute;
-            width: 21px;
-            height: 21px;
+            width: 24px;
+            height: 24px;
             background: #ffffff;
             border-radius: 50%;
             top: 2px;
             left: 2px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
+
         .dark-mode-toggle input:checked::before {
-            transform: translateX(25px);
+            transform: translateX(26px);
+            background: #e6fffa;
         }
+
         .dark-mode-toggle input:checked {
             background: var(--available-bg);
         }
+
         .section {
-            margin-bottom: 20px;
-            padding: 20px;
+            margin-bottom: 25px;
+            padding: 25px;
             background: var(--section-bg);
-            border-radius: 10px;
-            border-left: 4px solid var(--accent-color);
+            border-radius: 12px;
+            border-left: 5px solid var(--accent-color);
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
         }
+
         .section:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px var(--shadow-color);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--shadow-color);
         }
+
         .section h2 {
             color: var(--text-color);
-            font-size: 22px;
-            margin-bottom: 15px;
+            font-size: 24px;
+            margin-bottom: 20px;
             font-weight: 600;
         }
+
         .teachers {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
             justify-content: center;
         }
+
         .teacher-btn {
-            padding: 10px 15px;
+            padding: 12px 20px;
             background: var(--button-bg);
             border: 1px solid var(--accent-color);
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: default;
             font-size: 16px;
             color: var(--text-color);
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, box-shadow 0.2s ease;
             white-space: normal;
             text-align: center;
-            min-width: 100px;
-            margin: 2px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            background-clip: padding-box;
+            min-width: 120px;
+            margin: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .teacher-btn.available {
             background: var(--available-bg);
             color: #ffffff;
             font-weight: 700;
             border: 1px solid var(--accent-dark);
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
+
         .teacher-btn:hover {
             background: var(--button-hover);
-            transform: scale(1.03);
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px var(--shadow-color);
             color: var(--text-color);
         }
+
         .teacher-btn.available:hover {
             background: var(--available-hover);
             color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         .search-bar {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 20px;
             border: 1px solid var(--input-border);
-            border-radius: 8px;
+            border-radius: 10px;
             background: var(--input-bg);
             box-shadow: inset 0 2px 4px var(--input-shadow);
             font-size: 16px;
             color: var(--text-color);
-            transition: box-shadow 0.2s ease;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
+
         .search-bar:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(46, 204, 113, 0.2);
+            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            border-color: var(--accent-dark);
         }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
+
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: var(--text-color);
-            font-size: 17px;
+            font-size: 18px;
         }
+
         .form-group input, .form-group select {
-            padding: 10px;
-            width: 220px;
+            padding: 12px;
+            width: 100%;
+            max-width: 300px;
             border: 1px solid var(--input-border);
-            border-radius: 8px;
+            border-radius: 10px;
             background: var(--input-bg);
             box-shadow: inset 0 2px 4px var(--input-shadow);
             font-size: 16px;
             color: var(--text-color);
-            transition: box-shadow 0.2s ease;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
+
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(46, 204, 113, 0.2);
+            box-shadow: inset 0 2px 6px var(--input-shadow), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            border-color: var(--accent-dark);
         }
+
         button {
-            padding: 12px 25px;
+            padding: 14px 30px;
             background: var(--available-bg);
             color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 500;
-            transition: transform 0.2s ease, background 0.3s ease;
+            font-weight: 600;
+            transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
+
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             background: var(--available-hover);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         .totals {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            align-items: center; /* Added: Align year dropdown and month buttons */
         }
+
         .totals button {
-            padding: 8px 15px;
+            padding: 10px 20px;
             background: var(--button-bg);
             color: var(--text-color);
             border: 1px solid var(--accent-color);
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            font-size: 15px;
+            transition: all 0.3s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 60px; /* Updated: Consistent min-width for month buttons */
         }
+
         .totals button:hover {
             background: var(--button-hover);
-            transform: scale(1.03);
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
+
         .totals button.active {
             background: var(--available-bg);
             color: #ffffff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
-        p {
-            font-size: 15px;
+
+        /* Added: Style for year select dropdown */
+        .totals select {
+            padding: 10px 15px;
+            background: var(--button-bg);
             color: var(--text-color);
-            margin: 5px 0;
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 100px; /* Ensure dropdown is wide enough */
+            appearance: none; /* Remove default dropdown arrow */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%231a202c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        [data-theme="dark"] .totals select {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23f3f4f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); /* Custom arrow for dark mode */
+        }
+
+        .totals select:focus {
+            outline: none;
+            box-shadow: 0 4px 8px var(--shadow-color), 0 0 0 3px rgba(52, 211, 153, 0.2);
+            border-color: var(--accent-dark);
+        }
+
+        .totals select:hover {
+            background: var(--button-hover);
+            transform: scale(1.05);
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin: 8px 0;
             text-align: center;
         }
+
         .availability-list {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-color);
-            max-height: 200px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            border-left: 5px solid var(--accent-color);
+            max-height: 220px;
             overflow-y: auto;
         }
+
         .availability-list p {
-            margin: 5px 0;
-            font-size: 15px;
+            margin: 8px 0;
+            font-size: 16px;
         }
+
         @media (max-width: 600px) {
-            .container { padding: 20px; }
-            .form-group input, .form-group select, .search-bar { width: 100%; }
-            .teacher-btn { min-width: 80px; font-size: 14px; }
-            .availability-list { max-height: 150px; }
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .section {
+                padding: 20px;
+            }
+            .form-group input, .form-group select, .search-bar {
+                max-width: 100%;
+            }
+            .teacher-btn {
+                min-width: 100px;
+                font-size: 15px;
+            }
+            .totals button {
+                padding: 8px 15px;
+                font-size: 14px;
+                min-width: 50px; /* Updated: Smaller min-width for month buttons */
+            }
+            .totals select {
+                min-width: 90px; /* Added: Smaller min-width for year dropdown */
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .availability-list {
+                max-height: 180px;
+            }
         }
     </style>
 </head>
@@ -292,7 +401,7 @@
             <label for="dark-mode">Mörkerläge</label>
             <input type="checkbox" id="dark-mode" name="dark-mode">
         </div>
-        <h1>Teacher Availability</h1>
+        <h1>IES Örebro Teacher Availability Dashboard</h1> <!-- Changed: Updated heading -->
         <div class="section">
             <h2>Available Right Now</h2>
             <p id="availabilityTime"></p>
@@ -347,7 +456,15 @@
         <div class="section">
             <h2>Monthly Totals</h2>
             <div class="totals" id="monthTotals">
-                <button>2025</button>
+                <!-- Changed: Replaced year buttons with select dropdown -->
+                <select id="yearSelect">
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                </select>
                 <button>Jan</button> <button>Feb</button> <button>Mar</button> <button>Apr</button>
                 <button>May</button> <button>Jun</button> <button>Jul</button> <button>Aug</button>
                 <button>Sep</button> <button>Oct</button> <button>Nov</button> <button>Dec</button>
