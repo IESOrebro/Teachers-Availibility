@@ -6,6 +6,7 @@
     <title>Teacher Availability</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* [Previous CSS remains unchanged] */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #e0eafc, #cfdef3);
@@ -186,7 +187,7 @@
         <h1>Teacher Availability</h1>
         <div class="section">
             <h2>Available Right Now</h2>
-            <p>Available as of 08:40 AM CET (showing monthly totals: Week: 2025-W43 / Month: 2025-10)</p>
+            <p id="availabilityTime"></p>
             <input type="text" class="search-bar" id="teacherSearch" placeholder="Search teachers...">
             <div class="teachers" id="availableTeachers"></div>
         </div>
@@ -204,7 +205,7 @@
                 <label>Time (To):</label>
                 <input type="time" id="timeTo">
             </div>
-            <button onclick="checkAvailability()">Check Availability</button>
+            <button onclick="ui.handleCheckAvailability()">Check Availability</button>
         </div>
         <div class="section">
             <h2>Extra Worked Minutes</h2>
@@ -213,7 +214,6 @@
                 <label>Teacher:</label>
                 <select id="extraTeacher">
                     <option value="">-- Select a teacher --</option>
-                    <!-- Populate dynamically -->
                 </select>
             </div>
             <div class="form-group">
@@ -224,7 +224,7 @@
                 <label>Minutes:</label>
                 <input type="number" id="minutes">
             </div>
-            <button onclick="addEntry()">Add</button>
+            <button onclick="ui.handleAddEntry()">Add</button>
         </div>
         <div class="section">
             <h2>Monthly Totals</h2>
@@ -239,144 +239,104 @@
     </div>
 
     <script>
-        let teachers = []; // Will be populated from Lektioner.txt
-        let teacherButtons = {};
-        const currentDate = new Date('2025-10-27T08:40:00+02:00'); // Current time: 08:40 AM CET
+        // Data Module
+        const data = {
+            teachers: [],
+            teacherButtons: {},
+            currentDate: new Date('2025-10-27T08:50:00+02:00'), // Updated to 08:50 AM CET
 
-        // Function to load teachers and their availability from Lektioner.txt
-        async function loadTeachers() {
-            try {
-                const response = await fetch('Lektioner.txt');
-                if (!response.ok) throw new Error('Failed to load Lektioner.txt');
-                const text = await response.text();
-                const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-                
-                teachers = lines.map(line => {
-                    const [name, timeRange] = line.split(':').map(part => part.trim());
-                    const [startStr, endStr] = timeRange.split('-').map(time => time.trim());
-                    return { name, start: startStr, end: endStr };
+            async loadFromFile() {
+                try {
+                    const response = await fetch('Lektioner.txt');
+                    if (!response.ok) throw new Error('Failed to load Lektioner.txt');
+                    const text = await response.text();
+                    const schedule = JSON.parse(text);
+                    return Object.entries(schedule).map(([name, days]) => ({
+                        name,
+                        schedule: days
+                    }));
+                } catch (error) {
+                    console.error('Error loading teachers:', error);
+                    return this.fallbackData();
+                }
+            },
+
+            fallbackData() {
+                return [
+                    { name: "Agnes Hellvig", schedule: { Monday: "Check schedule when needed", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Alan Smith", schedule: { Monday: "-;13:35-14:50", Tuesday: "-;9:20-10:30", Wednesday: "-", Thursday: "-", Friday: "-" } },
+                    { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "9:00-10:00;13:20-", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
+                    { name: "Alvinda Hall", schedule: { Monday: "9:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "9:00-10:20", Friday: "-" } },
+                    { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } }
+                    // Add more teachers as needed from the full JSON
+                ];
+            },
+
+            isAvailable(teacher) {
+                const day = this.currentDate.toLocaleString('en-US', { weekday: 'long' });
+                const schedule = teacher.schedule[day] || "-";
+                if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
+                const timeRanges = schedule.split(';').filter(range => range !== "-");
+                const now = this.currentDate;
+                const [hour, minute] = [now.getHours(), now.getMinutes()];
+                const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+                return timeRanges.some(range => {
+                    const [start, end] = range.split('-');
+                    if (!end || end === "") return false; // Treat incomplete ranges as unavailable
+                    const [startHour, startMin] = start.split(':').map(Number);
+                    const [endHour, endMin] = end.split(':').map(Number);
+                    const startTime = startHour * 60 + startMin;
+                    const endTime = endHour * 60 + endMin;
+                    const currentTotalMin = hour * 60 + minute;
+                    return currentTotalMin >= startTime && currentTotalMin <= endTime;
                 });
+            }
+        };
 
-                // Populate available teachers
+        // UI Module
+        const ui = {
+            init() {
+                this.updateTime();
+                data.loadFromFile().then(teachers => {
+                    data.teachers = teachers;
+                    this.renderTeachers();
+                    this.renderDropdown();
+                    this.setupSearch();
+                });
+            },
+
+            updateTime() {
+                const timeElement = document.getElementById('availabilityTime');
+                const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'CET', timeZoneName: 'short' };
+                timeElement.textContent = `Available as of ${data.currentDate.toLocaleTimeString('en-US', options)} (showing monthly totals: Week: 2025-W43 / Month: 2025-10)`;
+            },
+
+            renderTeachers() {
                 const availableDiv = document.getElementById('availableTeachers');
-                teachers.forEach(teacher => {
+                availableDiv.innerHTML = '';
+                data.teacherButtons = {};
+                data.teachers.forEach(teacher => {
                     const btn = document.createElement('button');
                     btn.textContent = teacher.name;
                     btn.className = 'teacher-btn';
-                    btn.dataset.start = teacher.start;
-                    btn.dataset.end = teacher.end;
-                    if (isTeacherAvailable(teacher)) btn.classList.add('available');
+                    if (data.isAvailable(teacher)) btn.classList.add('available');
                     availableDiv.appendChild(btn);
-                    teacherButtons[teacher.name] = btn;
+                    data.teacherButtons[teacher.name] = btn;
                 });
+            },
 
-                // Populate extra teacher dropdown
-                const extraTeacherSelect = document.getElementById('extraTeacher');
-                teachers.forEach(teacher => {
+            renderDropdown() {
+                const select = document.getElementById('extraTeacher');
+                select.innerHTML = '<option value="">-- Select a teacher --</option>';
+                data.teachers.forEach(teacher => {
                     const option = document.createElement('option');
                     option.value = teacher.name;
                     option.textContent = teacher.name;
-                    extraTeacherSelect.appendChild(option);
+                    select.appendChild(option);
                 });
+            },
 
-                // Set up search after loading
-                setupSearch();
-            } catch (error) {
-                console.error('Error loading teachers:', error);
-                fallbackTeachers();
-            }
-        }
-
-        // Check if a teacher is available based on current time
-        function isTeacherAvailable(teacher) {
-            const now = currentDate;
-            const [startHour, startMinute] = teacher.start.split(':').map(Number);
-            const [endHour, endMinute] = teacher.end.split(':').map(Number);
-            const startTime = new Date(now);
-            startTime.setHours(startHour, startMinute, 0, 0);
-            const endTime = new Date(now);
-            endTime.setHours(endHour, endMinute, 0, 0);
-            return now >= startTime && now <= endTime;
-        }
-
-        // Fallback if file load fails
-        function fallbackTeachers() {
-            const fallbackData = [
-                { name: "Anastasia Bond", start: "08:00", end: "12:00" },
-                { name: "Erwin Schmidt", start: "09:00", end: "13:00" },
-                { name: "Hayden Anderson", start: "07:00", end: "10:00" },
-                { name: "Jonathan Engel", start: "08:30", end: "11:30" },
-                { name: "Josephine Gerber", start: "10:00", end: "14:00" }
-            ];
-            teachers = fallbackData;
-            loadTeachersFromArray(fallbackData);
-        }
-
-        function loadTeachersFromArray(data) {
-            const availableDiv = document.getElementById('availableTeachers');
-            availableDiv.innerHTML = '';
-            teacherButtons = {};
-            data.forEach(teacher => {
-                const btn = document.createElement('button');
-                btn.textContent = teacher.name;
-                btn.className = 'teacher-btn';
-                btn.dataset.start = teacher.start;
-                btn.dataset.end = teacher.end;
-                if (isTeacherAvailable(teacher)) btn.classList.add('available');
-                availableDiv.appendChild(btn);
-                teacherButtons[teacher.name] = btn;
-            });
-            const extraTeacherSelect = document.getElementById('extraTeacher');
-            extraTeacherSelect.innerHTML = '<option value="">-- Select a teacher --</option>';
-            data.forEach(teacher => {
-                const option = document.createElement('option');
-                option.value = teacher.name;
-                option.textContent = teacher.name;
-                extraTeacherSelect.appendChild(option);
-            });
-            setupSearch();
-        }
-
-        // Teacher search functionality
-        function setupSearch() {
-            const searchInput = document.getElementById('teacherSearch');
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                teachers.forEach(teacher => {
-                    const btn = teacherButtons[teacher.name];
-                    if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
-                        btn.style.display = 'inline-flex';
-                    } else if (btn) {
-                        btn.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Placeholder functions
-        function checkAvailability() {
-            const date = document.getElementById('checkDate').value;
-            const timeFrom = document.getElementById('timeFrom').value;
-            const timeTo = document.getElementById('timeTo').value;
-            if (date && timeFrom && timeTo) {
-                const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
-                const available = teachers.filter(t => {
-                    const start = new Date(date + 'T' + t.start + ':00+02:00');
-                    const end = new Date(date + 'T' + t.end + ':00+02:00');
-                    return checkDate >= start && checkDate <= end;
-                }).map(t => t.name);
-                alert(`Available teachers: ${available.join(', ') || 'None'}`);
-            } else {
-                alert('Please fill all fields.');
-            }
-        }
-
-        function addEntry() {
-            alert('Entry added!');
-        }
-
-        // Load teachers on page load
-        loadTeachers();
-    </script>
-</body>
-</html>
+            setupSearch() {
+                const searchInput = document.getElementById('teacherSearch');
+                search
