@@ -243,20 +243,24 @@
         const data = {
             teachers: [],
             teacherButtons: {},
-            currentDate: new Date('2025-10-27T08:50:00+02:00'), // Updated to 08:50 AM CET
+            currentDate: new Date('2025-10-27T08:53:00+02:00'), // Updated to 08:53 AM CET
 
             async loadFromFile() {
                 try {
                     const response = await fetch('Lektioner.txt');
-                    if (!response.ok) throw new Error('Failed to load Lektioner.txt');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                    }
                     const text = await response.text();
+                    console.log('Fetched data:', text); // Debug: Log the raw fetched data
                     const schedule = JSON.parse(text);
+                    console.log('Parsed schedule:', schedule); // Debug: Log the parsed JSON
                     return Object.entries(schedule).map(([name, days]) => ({
                         name,
                         schedule: days
                     }));
                 } catch (error) {
-                    console.error('Error loading teachers:', error);
+                    console.error('Error loading teachers:', error.message);
                     return this.fallbackData();
                 }
             },
@@ -268,7 +272,7 @@
                     { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "9:00-10:00;13:20-", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
                     { name: "Alvinda Hall", schedule: { Monday: "9:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "9:00-10:20", Friday: "-" } },
                     { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } }
-                    // Add more teachers as needed from the full JSON
+                    // Expand with full list if needed
                 ];
             },
 
@@ -300,10 +304,11 @@
                 this.updateTime();
                 data.loadFromFile().then(teachers => {
                     data.teachers = teachers;
+                    console.log('Loaded teachers:', teachers); // Debug: Log the loaded teachers
                     this.renderTeachers();
                     this.renderDropdown();
                     this.setupSearch();
-                });
+                }).catch(error => console.error('Error in init:', error));
             },
 
             updateTime() {
@@ -339,4 +344,56 @@
 
             setupSearch() {
                 const searchInput = document.getElementById('teacherSearch');
-                search
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    data.teachers.forEach(teacher => {
+                        const btn = data.teacherButtons[teacher.name];
+                        if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
+                            btn.style.display = 'inline-flex';
+                        } else if (btn) {
+                            btn.style.display = 'none';
+                        }
+                    });
+                });
+            },
+
+            handleCheckAvailability() {
+                const date = document.getElementById('checkDate').value;
+                const timeFrom = document.getElementById('timeFrom').value;
+                const timeTo = document.getElementById('timeTo').value;
+                if (date && timeFrom && timeTo) {
+                    const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
+                    const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
+                    const available = data.teachers.filter(t => {
+                        const schedule = t.schedule[day] || "-";
+                        if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
+                        const timeRanges = schedule.split(';').filter(range => range !== "-");
+                        const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
+                        const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        return timeRanges.some(range => {
+                            const [start, end] = range.split('-');
+                            if (!end || end === "") return false;
+                            const [startHour, startMin] = start.split(':').map(Number);
+                            const [endHour, endMin] = end.split(':').map(Number);
+                            const startTime = startHour * 60 + startMin;
+                            const endTime = endHour * 60 + endMin;
+                            const currentTotalMin = hour * 60 + minute;
+                            return currentTotalMin >= startTime && currentTotalMin <= endTime;
+                        });
+                    }).map(t => t.name);
+                    alert(`Available teachers: ${available.join(', ') || 'None'}`);
+                } else {
+                    alert('Please fill all fields.');
+                }
+            },
+
+            handleAddEntry() {
+                alert('Entry added!');
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => ui.init());
+    </script>
+</body>
+</html>
