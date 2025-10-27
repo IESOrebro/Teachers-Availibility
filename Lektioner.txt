@@ -1,45 +1,310 @@
-Teacher                        Monday                     Tuesday                    Wednesday                  Thursday                   Friday
-Agnes Hellvig                 Check schedule when needed -                        -                          -                          -
-Alan Smith                    -;13:35-14:50             -;9:20-10:30              -                          -                          -
-Alex Reid                     -                          9:00-10:00;13:20-         -                          10:55-12:15               -
-Alvinda Hall                  9:35-10:45;13:40-14:40   -                          12:35-14:00               9:00-10:20                -
-Alyssa Gestrinius             10:30-11:30               -                          -                          -                          -
-Amanda Bergström              -;14:45-16:00             -                          -;12:50-14:30             -                          -
-Amra Zaklan                   -                          10:15-11:25               -                          -                          -
-Angelica Norgren              check schedule             check schedule             check schedule             check schedule             check schedule
-Ann-Sofie Nordbrandt          9:55-10:55                -;13:05-15:00             10:30-11:45               -                          -
-Anna Svensson                 9:50-12:10                8:00-10:55                8:00-9:50                 9:45-10:55                -
-Carl Ölvstam                  -;12:30-13:55             8:00-11:00;13:30-14:30    10:55-12:00               -;13:30-14:30             -
-Caroline Kohl                 -;12:05-13:20             -                          10:30-11:30               -                          -
-Catherine Asp                 8:45-10:00                -                          -;11:00-12:45             -                          -
-Dag Mollestam                 10:25-11:25;13:15-14:15  -                          -;13:15-14:30             8:00-9:20                 -
-Dane Söderkvist               8:00-9:10                 -;13:25-14:25             9:20-10:30                -                          -
-Elyssa Fors                   8:45-10:05;13:55-15:00   -;13:40-15:00             -;11:35-12:50             -;13:50-15:30             -
-Fiona Olsson                  9:20-10:20                -;13:30-16:00             9:20-10:30;13:15-         9:25-11:20                -
-Garret Cooke                  any of his support times  any of his support times  any of his support times  any of his support times  any of his support times
-Hanna Ohlsson                 9:20-11:00;14:25-15:30   9:15-11:00                -;13:20-14:30             9:20-10:30                -
-Jessica Erke                  8:00-9:50;11:00-12:05    8:10-10:25                10:20-11:35               -;8:00-9:20               -
-Jo-Anne Wong                  -                          -                          -;12:50-                  9:20-10:40                -
-Johan Anselmius               9:50-11:00                -;15:00-16:00             9:20-10:25                -                          -
-Jon Hammar                    -                          8:15-9:15                 9:00-11:05                8:15-9:30                 8:00-9:15
-Juan Ruiz                     Check his schedule, doesn't work everyday -;12:50-14:35 -;12:30-13:35 - -
-Kayley Scrooby                -;12:45-14:20             -                          9:50-11:05                -                          -
-Kevin Belyea                  -;14:50-16:00             9:20-11:40                -;12:00-13:40             8:00-9:15                 -
-Kristoffer Sjöberg            8:45-10:05;13:05-14:05   -;12:10-13:45             11:15-12:35               9:40-10:50;-              8:00-9:40
-Lethea McCann                 -                          9:20-11:25;12:40-14:50   -;13:05-14:40             9:15-10:25                -
-Linda Nordh                   -                          -                          -                          -                          -
-Linda Palmkvist               8:50-9:50                 -                          -;12:50-13:55             -                          -
-Lisa Lonergan                 -;12:40-14:35             9:20-10:35                9:35-10:55                9:20-11:15;-              -;12:00-14:45
-Michaela Japec                -                          9:15-11:45                10:30-11:45               8:00-9:45                 -
-Naomi Kirkvold                9:20-10:30;13:35-14:40   9:20-10:40                -;12:15-13:25             9:15-10:25                -
-Niclas Andersson              -                          -;13:40-14:30             9:00-10:20                -;14:00-15:50             -
-Nina Easy Palm                -                          -;12:25-13:25             -;12:40-13:40             -                          -;??
-Patricio Caro Gonzalez        -                          -                          10:50-11:50               -                          -
-Susanne Lundkvist             9:25-10:30                -;12:30-14:35             9:20-10:30                -;12:05-13:30             -
-Tekla Alsbjer                 -;14:10-15:15             9:20-10:25                8:00-9:15                 -;14:40-15:45             9:15-10:30
-Tilde Lidner                  9:50-11:05;12:20-13:30   9:20-10:25                12:00-13:35               -;11:55-13:30             -
-Timothy Parcel                -;13:15-14:45             -                          -;13:15-                  8:00-9:45                 -
-Wynonah Plattner              Check her schedule         -                          -                          -                          -
-Yoni Olsson                   -;12:20-14:00             9:15-10:20;14:50-16:00    8:00-9:15                 13:00-14:30               -
-Zlatan Jaranovic              10:55-12:00               8:00-9:15                 8:00-9:30                 -                          -
-Zofia Czarnowska              -                          -;14:45-16:00             11:20-12:30               11:20-12:35;14:30-16:
+{
+  "Agnes Hellvig": {
+    "Monday": "Check schedule when needed",
+    "Tuesday": "-",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Alan Smith": {
+    "Monday": "-;13:35-14:50",
+    "Tuesday": "-;9:20-10:30",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Alex Reid": {
+    "Monday": "-",
+    "Tuesday": "9:00-10:00;13:20-",
+    "Wednesday": "-",
+    "Thursday": "10:55-12:15",
+    "Friday": "-"
+  },
+  "Alvinda Hall": {
+    "Monday": "9:35-10:45;13:40-14:40",
+    "Tuesday": "-",
+    "Wednesday": "12:35-14:00",
+    "Thursday": "9:00-10:20",
+    "Friday": "-"
+  },
+  "Alyssa Gestrinius": {
+    "Monday": "10:30-11:30",
+    "Tuesday": "-",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Amanda Bergström": {
+    "Monday": "-;14:45-16:00",
+    "Tuesday": "-",
+    "Wednesday": "-;12:50-14:30",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Amra Zaklan": {
+    "Monday": "-",
+    "Tuesday": "10:15-11:25",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Angelica Norgren": {
+    "Monday": "check schedule",
+    "Tuesday": "check schedule",
+    "Wednesday": "check schedule",
+    "Thursday": "check schedule",
+    "Friday": "check schedule"
+  },
+  "Ann-Sofie Nordbrandt": {
+    "Monday": "9:55-10:55",
+    "Tuesday": "-;13:05-15:00",
+    "Wednesday": "10:30-11:45",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Anna Svensson": {
+    "Monday": "9:50-12:10",
+    "Tuesday": "8:00-10:55",
+    "Wednesday": "8:00-9:50",
+    "Thursday": "9:45-10:55",
+    "Friday": "-"
+  },
+  "Carl Ölvstam": {
+    "Monday": "-;12:30-13:55",
+    "Tuesday": "8:00-11:00;13:30-14:30",
+    "Wednesday": "10:55-12:00",
+    "Thursday": "-;13:30-14:30",
+    "Friday": "-"
+  },
+  "Caroline Kohl": {
+    "Monday": "-;12:05-13:20",
+    "Tuesday": "-",
+    "Wednesday": "10:30-11:30",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Catherine Asp": {
+    "Monday": "8:45-10:00",
+    "Tuesday": "-",
+    "Wednesday": "-;11:00-12:45",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Dag Mollestam": {
+    "Monday": "10:25-11:25;13:15-14:15",
+    "Tuesday": "-",
+    "Wednesday": "-;13:15-14:30",
+    "Thursday": "8:00-9:20",
+    "Friday": "-"
+  },
+  "Dane Söderkvist": {
+    "Monday": "8:00-9:10",
+    "Tuesday": "-;13:25-14:25",
+    "Wednesday": "9:20-10:30",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Elyssa Fors": {
+    "Monday": "8:45-10:05;13:55-15:00",
+    "Tuesday": "-;13:40-15:00",
+    "Wednesday": "-;11:35-12:50",
+    "Thursday": "-;13:50-15:30",
+    "Friday": "-"
+  },
+  "Fiona Olsson": {
+    "Monday": "9:20-10:20",
+    "Tuesday": "-;13:30-16:00",
+    "Wednesday": "9:20-10:30;13:15-",
+    "Thursday": "9:25-11:20",
+    "Friday": "-"
+  },
+  "Garret Cooke": {
+    "Monday": "any of his support times",
+    "Tuesday": "any of his support times",
+    "Wednesday": "any of his support times",
+    "Thursday": "any of his support times",
+    "Friday": "any of his support times"
+  },
+  "Hanna Ohlsson": {
+    "Monday": "9:20-11:00;14:25-15:30",
+    "Tuesday": "9:15-11:00",
+    "Wednesday": "-;13:20-14:30",
+    "Thursday": "9:20-10:30",
+    "Friday": "-"
+  },
+  "Jessica Erke": {
+    "Monday": "8:00-9:50;11:00-12:05",
+    "Tuesday": "8:10-10:25",
+    "Wednesday": "10:20-11:35",
+    "Thursday": "-;8:00-9:20",
+    "Friday": "-"
+  },
+  "Jo-Anne Wong": {
+    "Monday": "-",
+    "Tuesday": "-",
+    "Wednesday": "-;12:50-",
+    "Thursday": "9:20-10:40",
+    "Friday": "-"
+  },
+  "Johan Anselmius": {
+    "Monday": "9:50-11:00",
+    "Tuesday": "-;15:00-16:00",
+    "Wednesday": "9:20-10:25",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Jon Hammar": {
+    "Monday": "-",
+    "Tuesday": "8:15-9:15",
+    "Wednesday": "9:00-11:05",
+    "Thursday": "8:15-9:30",
+    "Friday": "8:00-9:15"
+  },
+  "Juan Ruiz": {
+    "Monday": "Check his schedule, doesn't work everyday",
+    "Tuesday": "-;12:50-14:35",
+    "Wednesday": "-;12:30-13:35",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Kayley Scrooby": {
+    "Monday": "-;12:45-14:20",
+    "Tuesday": "-",
+    "Wednesday": "9:50-11:05",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Kevin Belyea": {
+    "Monday": "-;14:50-16:00",
+    "Tuesday": "9:20-11:40",
+    "Wednesday": "-;12:00-13:40",
+    "Thursday": "8:00-9:15",
+    "Friday": "-"
+  },
+  "Kristoffer Sjöberg": {
+    "Monday": "8:45-10:05;13:05-14:05",
+    "Tuesday": "-;12:10-13:45",
+    "Wednesday": "11:15-12:35",
+    "Thursday": "9:40-10:50;-",
+    "Friday": "8:00-9:40"
+  },
+  "Lethea McCann": {
+    "Monday": "-",
+    "Tuesday": "9:20-11:25;12:40-14:50",
+    "Wednesday": "-;13:05-14:40",
+    "Thursday": "9:15-10:25",
+    "Friday": "-"
+  },
+  "Linda Nordh": {
+    "Monday": "-",
+    "Tuesday": "-",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Linda Palmkvist": {
+    "Monday": "8:50-9:50",
+    "Tuesday": "-",
+    "Wednesday": "-;12:50-13:55",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Lisa Lonergan": {
+    "Monday": "-;12:40-14:35",
+    "Tuesday": "9:20-10:35",
+    "Wednesday": "9:35-10:55",
+    "Thursday": "9:20-11:15;-",
+    "Friday": "-;12:00-14:45"
+  },
+  "Michaela Japec": {
+    "Monday": "-",
+    "Tuesday": "9:15-11:45",
+    "Wednesday": "10:30-11:45",
+    "Thursday": "8:00-9:45",
+    "Friday": "-"
+  },
+  "Naomi Kirkvold": {
+    "Monday": "9:20-10:30;13:35-14:40",
+    "Tuesday": "9:20-10:40",
+    "Wednesday": "-;12:15-13:25",
+    "Thursday": "9:15-10:25",
+    "Friday": "-"
+  },
+  "Niclas Andersson": {
+    "Monday": "-",
+    "Tuesday": "-;13:40-14:30",
+    "Wednesday": "9:00-10:20",
+    "Thursday": "-;14:00-15:50",
+    "Friday": "-"
+  },
+  "Nina Easy Palm": {
+    "Monday": "-",
+    "Tuesday": "-;12:25-13:25",
+    "Wednesday": "-;12:40-13:40",
+    "Thursday": "-",
+    "Friday": "-;??"
+  },
+  "Patricio Caro Gonzalez": {
+    "Monday": "-",
+    "Tuesday": "-",
+    "Wednesday": "10:50-11:50",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Susanne Lundkvist": {
+    "Monday": "9:25-10:30",
+    "Tuesday": "-;12:30-14:35",
+    "Wednesday": "9:20-10:30",
+    "Thursday": "-;12:05-13:30",
+    "Friday": "-"
+  },
+  "Tekla Alsbjer": {
+    "Monday": "-;14:10-15:15",
+    "Tuesday": "9:20-10:25",
+    "Wednesday": "8:00-9:15",
+    "Thursday": "-;14:40-15:45",
+    "Friday": "9:15-10:30"
+  },
+  "Tilde Lidner": {
+    "Monday": "9:50-11:05;12:20-13:30",
+    "Tuesday": "9:20-10:25",
+    "Wednesday": "12:00-13:35",
+    "Thursday": "-;11:55-13:30",
+    "Friday": "-"
+  },
+  "Timothy Parcel": {
+    "Monday": "-;13:15-14:45",
+    "Tuesday": "-",
+    "Wednesday": "-;13:15-",
+    "Thursday": "8:00-9:45",
+    "Friday": "-"
+  },
+  "Wynonah Plattner": {
+    "Monday": "Check her schedule",
+    "Tuesday": "-",
+    "Wednesday": "-",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Yoni Olsson": {
+    "Monday": "-;12:20-14:00",
+    "Tuesday": "9:15-10:20;14:50-16:00",
+    "Wednesday": "8:00-9:15",
+    "Thursday": "13:00-14:30",
+    "Friday": "-"
+  },
+  "Zlatan Jaranovic": {
+    "Monday": "10:55-12:00",
+    "Tuesday": "8:00-9:15",
+    "Wednesday": "8:00-9:30",
+    "Thursday": "-",
+    "Friday": "-"
+  },
+  "Zofia Czarnowska": {
+    "Monday": "-",
+    "Tuesday": "-;14:45-16:00",
+    "Wednesday": "11:20-12:30",
+    "Thursday": "11:20-12:35;14:30-16:00",
+    "Friday": "-"
+  }
+}
