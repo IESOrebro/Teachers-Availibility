@@ -6,53 +6,132 @@
     <title>Teacher Availability</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Light mode (default) */
+            --bg-gradient: linear-gradient(135deg, #f0f4ff, #e6eaff);
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --section-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #1a2a44;
+            --accent-color: #4ec27f;
+            --accent-dark: #2f9b5e;
+            --border-color: rgba(200, 200, 255, 0.3);
+            --button-bg: rgba(240, 248, 255, 0.8);
+            --button-hover: rgba(200, 230, 255, 0.9);
+            --available-bg: linear-gradient(135deg, #4ec27f, #2f9b5e);
+            --available-hover: linear-gradient(135deg, #5fd893, #2f9b5e);
+            --shadow-color: rgba(78, 194, 127, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.95);
+            --input-border: #4ec27f;
+            --input-shadow: rgba(78, 194, 127, 0.1);
+        }
+
+        [data-theme="dark"] {
+            /* Dark mode */
+            --bg-gradient: linear-gradient(135deg, #1a2a44, #0f192e);
+            --container-bg: rgba(26, 42, 68, 0.9);
+            --section-bg: rgba(15, 25, 46, 0.95);
+            --text-color: #e6eaff;
+            --accent-color: #5fd893;
+            --accent-dark: #2f9b5e;
+            --border-color: rgba(47, 155, 94, 0.3);
+            --button-bg: rgba(15, 25, 46, 0.8);
+            --button-hover: rgba(26, 42, 68, 0.9);
+            --available-bg: linear-gradient(135deg, #5fd893, #2f9b5e);
+            --available-hover: linear-gradient(135deg, #4ec27f, #2f9b5e);
+            --shadow-color: rgba(47, 155, 94, 0.3);
+            --input-bg: rgba(15, 25, 46, 0.95);
+            --input-border: #5fd893;
+            --input-shadow: rgba(47, 155, 94, 0.1);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f4ff, #e6eaff); /* Lighter gradient for better contrast */
+            background: var(--bg-gradient);
             margin: 0;
             padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            transition: background 0.3s ease;
         }
         .container {
             max-width: 850px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.9); /* Increased opacity for brightness */
+            background: var(--container-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(200, 200, 255, 0.3); /* Lighter border */
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border 0.3s ease;
         }
         h1 {
-            color: #1a2a44; /* Darker blue for contrast */
+            color: var(--text-color);
             font-size: 28px;
             margin-bottom: 25px;
             text-align: center;
-            background: linear-gradient(90deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-dark));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             font-weight: 700;
         }
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .dark-mode-toggle label {
+            color: var(--text-color);
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .dark-mode-toggle input {
+            appearance: none;
+            width: 50px;
+            height: 25px;
+            background: var(--button-bg);
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .dark-mode-toggle input::before {
+            content: '';
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        .dark-mode-toggle input:checked::before {
+            transform: translateX(25px);
+        }
+        .dark-mode-toggle input:checked {
+            background: var(--available-bg);
+        }
         .section {
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.95); /* Near-full opacity for brightness */
+            background: var(--section-bg);
             border-radius: 12px;
-            border-left: 6px solid #4ec27f; /* Brighter green border */
+            border-left: 6px solid var(--accent-color);
             backdrop-filter: blur(5px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
         }
         .section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(78, 194, 127, 0.3); /* Brighter shadow */
+            box-shadow: 0 6px 15px var(--shadow-color);
         }
         .section h2 {
-            color: #1a2a44; /* Darker text for contrast */
+            color: var(--text-color);
             font-size: 20px;
             margin-bottom: 15px;
             font-weight: 600;
@@ -65,51 +144,51 @@
         }
         .teacher-btn {
             padding: 10px 15px;
-            background: rgba(240, 248, 255, 0.8); /* Lighter blue background */
-            border: 1px solid #4ec27f; /* Green border for visibility */
+            background: var(--button-bg);
+            border: 1px solid var(--accent-color);
             border-radius: 20px;
             cursor: default;
             font-size: 14px;
-            color: #1a2a44; /* Dark text for contrast */
-            font-weight: 500; /* Slightly bolder text */
+            color: var(--text-color);
+            font-weight: 500;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
             white-space: normal;
             text-align: center;
             min-width: 100px;
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5); /* Slight white glow for brightness */
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
         }
         .teacher-btn.available {
-            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
-            color: #ffffff; /* White text for maximum contrast */
+            background: var(--available-bg);
+            color: #ffffff;
             font-weight: 600;
-            border: 1px solid #2f9b5e; /* Darker green border */
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            border: 1px solid var(--accent-dark);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         .teacher-btn:hover {
-            background: rgba(200, 230, 255, 0.9); /* Lighter hover color */
+            background: var(--button-hover);
             transform: scale(1.05);
-            color: #1a2a44; /* Dark text on hover */
+            color: var(--text-color);
         }
         .teacher-btn.available:hover {
-            background: linear-gradient(135deg, #5fd893, #2f9b5e); /* Even brighter hover gradient */
-            color: #ffffff; /* Keep white text */
+            background: var(--available-hover);
+            color: #ffffff;
         }
         .search-bar {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #4ec27f; /* Green border */
+            border: 1px solid var(--input-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.95); /* Brighter background */
-            box-shadow: inset 0 2px 4px rgba(78, 194, 127, 0.1); /* Subtle green shadow */
+            background: var(--input-bg);
+            box-shadow: inset 0 2px 4px var(--input-shadow);
             font-size: 14px;
-            color: #1a2a44; /* Dark text */
+            color: var(--text-color);
             transition: box-shadow 0.2s ease;
         }
         .search-bar:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(78, 194, 127, 0.3); /* Brighter focus shadow */
+            box-shadow: inset 0 2px 6px rgba(95, 216, 147, 0.3); /* Brighter focus for dark mode */
         }
         .form-group {
             margin-bottom: 15px;
@@ -118,28 +197,28 @@
             display: block;
             font-weight: 500;
             margin-bottom: 6px;
-            color: #1a2a44; /* Darker label text */
+            color: var(--text-color);
             font-size: 14px;
         }
         .form-group input, .form-group select {
             padding: 10px;
             width: 220px;
-            border: 1px solid #4ec27f; /* Green border */
+            border: 1px solid var(--input-border);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.95); /* Brighter background */
-            box-shadow: inset 0 2px 4px rgba(78, 194, 127, 0.1); /* Subtle shadow */
+            background: var(--input-bg);
+            box-shadow: inset 0 2px 4px var(--input-shadow);
             font-size: 14px;
-            color: #1a2a44; /* Dark text */
+            color: var(--text-color);
             transition: box-shadow 0.2s ease;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            box-shadow: inset 0 2px 6px rgba(78, 194, 127, 0.3); /* Brighter focus shadow */
+            box-shadow: inset 0 2px 6px rgba(95, 216, 147, 0.3);
         }
         button {
             padding: 12px 25px;
-            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter green gradient */
-            color: #ffffff; /* White text */
+            background: var(--available-bg);
+            color: #ffffff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -149,7 +228,7 @@
         }
         button:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #5fd893, #2f9b5e); /* Brighter hover gradient */
+            background: var(--available-hover);
         }
         .totals {
             display: flex;
@@ -160,25 +239,25 @@
         }
         .totals button {
             padding: 8px 15px;
-            background: rgba(240, 248, 255, 0.8); /* Lighter blue background */
-            color: #1a2a44; /* Dark text */
-            border: 1px solid #4ec27f; /* Green border */
+            background: var(--button-bg);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
             border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
             transition: all 0.3s ease;
         }
         .totals button:hover {
-            background: rgba(200, 230, 255, 0.9); /* Lighter hover color */
+            background: var(--button-hover);
             transform: scale(1.1);
         }
         .totals button.active {
-            background: linear-gradient(135deg, #4ec27f, #2f9b5e); /* Brighter active gradient */
-            color: #ffffff; /* White text */
+            background: var(--available-bg);
+            color: #ffffff;
         }
         p {
             font-size: 14px;
-            color: #1a2a44; /* Darker paragraph text */
+            color: var(--text-color);
             margin: 5px 0;
             text-align: center;
         }
@@ -191,6 +270,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="dark-mode-toggle">
+            <label for="dark-mode">Mörkerläge</label>
+            <input type="checkbox" id="dark-mode" name="dark-mode">
+        </div>
         <h1>Teacher Availability</h1>
         <div class="section">
             <h2>Available Right Now</h2>
@@ -250,7 +333,7 @@
         const data = {
             teachers: [],
             teacherButtons: {},
-            currentDate: new Date('2025-10-27T09:10:00+02:00'), // Updated to 09:10 AM CET
+            currentDate: new Date('2025-10-27T09:13:00+02:00'), // Updated to 09:13 AM CET
 
             async loadFromFile() {
                 try {
@@ -291,4 +374,128 @@
                 const [hour, minute] = [now.getHours(), now.getMinutes()];
                 const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-                return timeRanges.some(range
+                return timeRanges.some(range => {
+                    const [start, end] = range.split('-');
+                    if (!end || end === "") return false;
+                    const [startHour, startMin] = start.split(':').map(Number);
+                    const [endHour, endMin] = end.split(':').map(Number);
+                    const startTime = startHour * 60 + startMin;
+                    const endTime = endHour * 60 + endMin;
+                    const currentTotalMin = hour * 60 + minute;
+                    return currentTotalMin >= startTime && currentTotalMin <= endTime;
+                });
+            }
+        };
+
+        // UI Module
+        const ui = {
+            init() {
+                this.updateTime();
+                this.setupDarkModeToggle();
+                data.loadFromFile().then(teachers => {
+                    data.teachers = teachers;
+                    console.log('Loaded teachers:', teachers);
+                    this.renderTeachers();
+                    this.renderDropdown();
+                    this.setupSearch();
+                }).catch(error => console.error('Error in init:', error));
+            },
+
+            updateTime() {
+                const timeElement = document.getElementById('availabilityTime');
+                const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'CET', timeZoneName: 'short' };
+                timeElement.textContent = `Available as of ${data.currentDate.toLocaleTimeString('en-US', options)} (showing monthly totals: Week: 2025-W43 / Month: 2025-10)`;
+            },
+
+            setupDarkModeToggle() {
+                const toggle = document.getElementById('dark-mode');
+                toggle.addEventListener('change', () => {
+                    document.body.dataset.theme = toggle.checked ? 'dark' : 'light';
+                    localStorage.setItem('theme', toggle.checked ? 'dark' : 'light'); // Save preference
+                });
+                // Load saved theme or default to light
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.body.dataset.theme = savedTheme;
+                toggle.checked = savedTheme === 'dark';
+            },
+
+            renderTeachers() {
+                const availableDiv = document.getElementById('availableTeachers');
+                availableDiv.innerHTML = '';
+                data.teacherButtons = {};
+                data.teachers.forEach(teacher => {
+                    const btn = document.createElement('button');
+                    btn.textContent = teacher.name;
+                    btn.className = 'teacher-btn';
+                    if (data.isAvailable(teacher)) btn.classList.add('available');
+                    availableDiv.appendChild(btn);
+                    data.teacherButtons[teacher.name] = btn;
+                });
+            },
+
+            renderDropdown() {
+                const select = document.getElementById('extraTeacher');
+                select.innerHTML = '<option value="">-- Select a teacher --</option>';
+                data.teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.name;
+                    option.textContent = teacher.name;
+                    select.appendChild(option);
+                });
+            },
+
+            setupSearch() {
+                const searchInput = document.getElementById('teacherSearch');
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    data.teachers.forEach(teacher => {
+                        const btn = data.teacherButtons[teacher.name];
+                        if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
+                            btn.style.display = 'inline-flex';
+                        } else if (btn) {
+                            btn.style.display = 'none';
+                        }
+                    });
+                });
+            },
+
+            handleCheckAvailability() {
+                const date = document.getElementById('checkDate').value;
+                const timeFrom = document.getElementById('timeFrom').value;
+                const timeTo = document.getElementById('timeTo').value;
+                if (date && timeFrom && timeTo) {
+                    const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
+                    const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
+                    const available = data.teachers.filter(t => {
+                        const schedule = t.schedule[day] || "-";
+                        if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
+                        const timeRanges = schedule.split(';').filter(range => range !== "-");
+                        const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
+                        const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        return timeRanges.some(range => {
+                            const [start, end] = range.split('-');
+                            if (!end || end === "") return false;
+                            const [startHour, startMin] = start.split(':').map(Number);
+                            const [endHour, endMin] = end.split(':').map(Number);
+                            const startTime = startHour * 60 + startMin;
+                            const endTime = endHour * 60 + endMin;
+                            const currentTotalMin = hour * 60 + minute;
+                            return currentTotalMin >= startTime && currentTotalMin <= endTime;
+                        });
+                    }).map(t => t.name);
+                    alert(`Available teachers: ${available.join(', ') || 'None'}`);
+                } else {
+                    alert('Please fill all fields.');
+                }
+            },
+
+            handleAddEntry() {
+                alert('Entry added!');
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => ui.init());
+    </script>
+</body>
+</html>
