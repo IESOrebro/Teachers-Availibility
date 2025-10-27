@@ -275,10 +275,24 @@
             margin: 5px 0;
             text-align: center;
         }
+        .availability-list {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .availability-list p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
         @media (max-width: 600px) {
             .container { padding: 15px; }
             .form-group input, .form-group select, .search-bar { width: 100%; }
             .teacher-btn { min-width: 80px; font-size: 14px; }
+            .availability-list { max-height: 150px; }
         }
     </style>
 </head>
@@ -310,6 +324,7 @@
                 <input type="time" id="timeTo">
             </div>
             <button onclick="ui.handleCheckAvailability()">Check Availability</button>
+            <div class="availability-list" id="availabilityResults"></div>
         </div>
         <div class="section">
             <h2>Extra Worked Minutes</h2>
@@ -347,7 +362,7 @@
         const data = {
             teachers: [],
             teacherButtons: {},
-            currentDate: new Date('2025-10-27T09:23:00+02:00'), // Updated to 09:23 AM CET
+            currentDate: new Date('2025-10-27T09:28:00+02:00'), // Updated to 09:28 AM CET
 
             async loadFromFile() {
                 try {
@@ -379,25 +394,32 @@
                 ];
             },
 
-            isAvailable(teacher) {
-                const day = this.currentDate.toLocaleString('en-US', { weekday: 'long' });
+            isAvailable(teacher, checkDate) {
+                const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
                 const schedule = teacher.schedule[day] || "-";
-                if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
+                if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return { available: false, ranges: [] };
                 const timeRanges = schedule.split(';').filter(range => range !== "-");
-                const now = this.currentDate;
-                const [hour, minute] = [now.getHours(), now.getMinutes()];
+                const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
                 const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                const [fromHour, fromMin] = [checkDate.getHours(), checkDate.getMinutes()];
+                const [toHour, toMin] = [checkDate.getHours() + 1, checkDate.getMinutes()]; // Example range, adjust based on timeTo
 
-                return timeRanges.some(range => {
+                const availableRanges = timeRanges.filter(range => {
                     const [start, end] = range.split('-');
                     if (!end || end === "") return false;
                     const [startHour, startMin] = start.split(':').map(Number);
                     const [endHour, endMin] = end.split(':').map(Number);
                     const startTime = startHour * 60 + startMin;
                     const endTime = endHour * 60 + endMin;
-                    const currentTotalMin = hour * 60 + minute;
-                    return currentTotalMin >= startTime && currentTotalMin <= endTime;
+                    const fromTime = fromHour * 60 + fromMin;
+                    const toTime = toHour * 60 + toMin;
+                    return startTime >= fromTime && endTime <= toTime;
                 });
+
+                return {
+                    available: availableRanges.length > 0,
+                    ranges: availableRanges
+                };
             }
         };
 
@@ -440,7 +462,7 @@
                     const btn = document.createElement('button');
                     btn.textContent = teacher.name;
                     btn.className = 'teacher-btn';
-                    if (data.isAvailable(teacher)) btn.classList.add('available');
+                    if (data.isAvailable(teacher, data.currentDate).available) btn.classList.add('available');
                     availableDiv.appendChild(btn);
                     data.teacherButtons[teacher.name] = btn;
                 });
@@ -476,15 +498,22 @@
                 const date = document.getElementById('checkDate').value;
                 const timeFrom = document.getElementById('timeFrom').value;
                 const timeTo = document.getElementById('timeTo').value;
+                const resultsDiv = document.getElementById('availabilityResults');
+
                 if (date && timeFrom && timeTo) {
                     const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
                     const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
-                    const available = data.teachers.filter(t => {
-                        const schedule = t.schedule[day] || "-";
+                    const [fromHour, fromMin] = timeFrom.split(':').map(Number);
+                    const [toHour, toMin] = timeTo.split(':').map(Number);
+                    const fromTime = fromHour * 60 + fromMin;
+                    const toTime = toHour * 60 + toMin;
+
+                    resultsDiv.innerHTML = ''; // Clear previous results
+
+                    const availableTeachers = data.teachers.filter(teacher => {
+                        const schedule = teacher.schedule[day] || "-";
                         if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
                         const timeRanges = schedule.split(';').filter(range => range !== "-");
-                        const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
-                        const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
                         return timeRanges.some(range => {
                             const [start, end] = range.split('-');
                             if (!end || end === "") return false;
@@ -492,511 +521,33 @@
                             const [endHour, endMin] = end.split(':').map(Number);
                             const startTime = startHour * 60 + startMin;
                             const endTime = endHour * 60 + endMin;
-                            const currentTotalMin = hour * 60 + minute;
-                            return currentTotalMin >= startTime && currentTotalMin <= endTime;
+                            return startTime >= fromTime && endTime <= toTime;
                         });
-                    }).map(t => t.name);
-                    alert(`Available teachers: ${available.join(', ') || 'None'}`);
-                } else {
-                    alert('Please fill all fields.');
-                }
-            },
+                    });
 
-            handleAddEntry() {
-                alert('Entry added!');
-            }
-        };
-
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => ui.init());
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Availability</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Light mode (default) */
-            --bg-gradient: linear-gradient(135deg, #f8fafc, #eef2f7);
-            --container-bg: rgba(255, 255, 255, 0.95);
-            --section-bg: rgba(255, 255, 255, 0.98);
-            --text-color: #1a202c;
-            --accent-color: #2ecc71;
-            --accent-dark: #27ae60;
-            --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(255, 255, 255, 0.9);
-            --button-hover: rgba(236, 240, 241, 0.9);
-            --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
-            --available-hover: linear-gradient(135deg, #27ae60, #219653);
-            --shadow-color: rgba(46, 204, 113, 0.15);
-            --input-bg: rgba(255, 255, 255, 0.98);
-            --input-border: #2ecc71;
-            --input-shadow: rgba(46, 204, 113, 0.1);
-        }
-
-        [data-theme="dark"] {
-            /* Dark mode */
-            --bg-gradient: linear-gradient(135deg, #1a252f, #0f161f);
-            --container-bg: rgba(26, 37, 47, 0.95);
-            --section-bg: rgba(15, 22, 31, 0.98);
-            --text-color: #ffffff;
-            --accent-color: #2ecc71;
-            --accent-dark: #27ae60;
-            --border-color: rgba(46, 204, 113, 0.2);
-            --button-bg: rgba(15, 22, 31, 0.9);
-            --button-hover: rgba(26, 37, 47, 0.9);
-            --available-bg: linear-gradient(135deg, #2ecc71, #27ae60);
-            --available-hover: linear-gradient(135deg, #27ae60, #219653);
-            --shadow-color: rgba(46, 204, 113, 0.15);
-            --input-bg: rgba(15, 22, 31, 0.98);
-            --input-border: #2ecc71;
-            --input-shadow: rgba(46, 204, 113, 0.1);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-gradient);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            transition: background 0.3s ease;
-        }
-        .container {
-            max-width: 850px;
-            width: 100%;
-            background: var(--container-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border-color);
-            transition: background 0.3s ease, border 0.3s ease;
-        }
-        h1 {
-            color: var(--text-color);
-            font-size: 28px;
-            margin-bottom: 25px;
-            text-align: center;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-dark));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700;
-        }
-        .dark-mode-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-        }
-        .dark-mode-toggle label {
-            color: var(--text-color);
-            margin-right: 10px;
-            font-size: 14px;
-        }
-        .dark-mode-toggle input {
-            appearance: none;
-            width: 50px;
-            height: 25px;
-            background: var(--button-bg);
-            border-radius: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .dark-mode-toggle input::before {
-            content: '';
-            position: absolute;
-            width: 21px;
-            height: 21px;
-            background: #ffffff;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s ease;
-        }
-        .dark-mode-toggle input:checked::before {
-            transform: translateX(25px);
-        }
-        .dark-mode-toggle input:checked {
-            background: var(--available-bg);
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: var(--section-bg);
-            border-radius: 10px;
-            border-left: 4px solid var(--accent-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
-        }
-        .section:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
-        .section h2 {
-            color: var(--text-color);
-            font-size: 20px;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        .teachers {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-        .teacher-btn {
-            padding: 10px 15px;
-            background: var(--button-bg);
-            border: 1px solid var(--accent-color);
-            border-radius: 15px;
-            cursor: default;
-            font-size: 16px; /* Increased font size for better readability */
-            color: var(--text-color);
-            font-weight: 600; /* Bolder text */
-            transition: all 0.3s ease;
-            white-space: normal;
-            text-align: center;
-            min-width: 100px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for contrast */
-            background-clip: padding-box; /* Ensure text stands out */
-        }
-        .teacher-btn.available {
-            background: var(--available-bg);
-            color: #ffffff;
-            font-weight: 700; /* Even bolder for available teachers */
-            border: 1px solid var(--accent-dark);
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
-        }
-        .teacher-btn:hover {
-            background: var(--button-hover);
-            transform: scale(1.05);
-            color: var(--text-color);
-        }
-        .teacher-btn.available:hover {
-            background: var(--available-hover);
-            color: #ffffff;
-        }
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            background: var(--input-bg);
-            box-shadow: inset 0 2px 4px var(--input-shadow);
-            font-size: 16px; /* Increased font size */
-            color: var(--text-color);
-            transition: box-shadow 0.2s ease;
-        }
-        .search-bar:focus {
-            outline: none;
-            box-shadow: inset 0 2px 6px rgba(46, 204, 113, 0.2);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text-color);
-            font-size: 16px; /* Increased font size */
-        }
-        .form-group input, .form-group select {
-            padding: 10px;
-            width: 220px;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            background: var(--input-bg);
-            box-shadow: inset 0 2px 4px var(--input-shadow);
-            font-size: 16px; /* Increased font size */
-            color: var(--text-color);
-            transition: box-shadow 0.2s ease;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            box-shadow: inset 0 2px 6px rgba(46, 204, 113, 0.2);
-        }
-        button {
-            padding: 12px 25px;
-            background: var(--available-bg);
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px; /* Increased font size */
-            font-weight: 500;
-            transition: transform 0.2s ease, background 0.3s ease;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            background: var(--available-hover);
-        }
-        .totals {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-        .totals button {
-            padding: 8px 15px;
-            background: var(--button-bg);
-            color: var(--text-color);
-            border: 1px solid var(--accent-color);
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 14px; /* Slightly increased */
-            transition: all 0.3s ease;
-        }
-        .totals button:hover {
-            background: var(--button-hover);
-            transform: scale(1.05);
-        }
-        .totals button.active {
-            background: var(--available-bg);
-            color: #ffffff;
-        }
-        p {
-            font-size: 14px;
-            color: var(--text-color);
-            margin: 5px 0;
-            text-align: center;
-        }
-        @media (max-width: 600px) {
-            .container { padding: 15px; }
-            .form-group input, .form-group select, .search-bar { width: 100%; }
-            .teacher-btn { min-width: 80px; font-size: 14px; } /* Adjusted for smaller screens */
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="dark-mode-toggle">
-            <label for="dark-mode">Mörkerläge</label>
-            <input type="checkbox" id="dark-mode" name="dark-mode">
-        </div>
-        <h1>Teacher Availability</h1>
-        <div class="section">
-            <h2>Available Right Now</h2>
-            <p id="availabilityTime"></p>
-            <input type="text" class="search-bar" id="teacherSearch" placeholder="Search teachers...">
-            <div class="teachers" id="availableTeachers"></div>
-        </div>
-        <div class="section">
-            <h2>Check Availability for a Time Range</h2>
-            <div class="form-group">
-                <label>Date:</label>
-                <input type="date" id="checkDate">
-            </div>
-            <div class="form-group">
-                <label>Time (From):</label>
-                <input type="time" id="timeFrom">
-            </div>
-            <div class="form-group">
-                <label>Time (To):</label>
-                <input type="time" id="timeTo">
-            </div>
-            <button onclick="ui.handleCheckAvailability()">Check Availability</button>
-        </div>
-        <div class="section">
-            <h2>Extra Worked Minutes</h2>
-            <p>This data is stored in your local browser. Use the Export/Import buttons to back it up or restore it.</p>
-            <div class="form-group">
-                <label>Teacher:</label>
-                <select id="extraTeacher">
-                    <option value="">-- Select a teacher --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Week/Year:</label>
-                <input type="text" id="weekYear" placeholder="Week 43, 2025">
-            </div>
-            <div class="form-group">
-                <label>Minutes:</label>
-                <input type="number" id="minutes">
-            </div>
-            <button onclick="ui.handleAddEntry()">Add</button>
-        </div>
-        <div class="section">
-            <h2>Monthly Totals</h2>
-            <div class="totals" id="monthTotals">
-                <button>2025</button>
-                <button>Jan</button> <button>Feb</button> <button>Mar</button> <button>Apr</button>
-                <button>May</button> <button>Jun</button> <button>Jul</button> <button>Aug</button>
-                <button>Sep</button> <button>Oct</button> <button>Nov</button> <button>Dec</button>
-            </div>
-            <p>Total for October 2025: 0 minutes</p>
-        </div>
-    </div>
-
-    <script>
-        // Data Module
-        const data = {
-            teachers: [],
-            teacherButtons: {},
-            currentDate: new Date('2025-10-27T09:17:00+02:00'), // Updated to 09:17 AM CET
-
-            async loadFromFile() {
-                try {
-                    const response = await fetch('Lektioner.txt');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                    if (availableTeachers.length > 0) {
+                        availableTeachers.forEach(teacher => {
+                            const schedule = teacher.schedule[day] || "-";
+                            const timeRanges = schedule.split(';').filter(range => range !== "-").filter(range => {
+                                const [start, end] = range.split('-');
+                                if (!end || end === "") return false;
+                                const [startHour, startMin] = start.split(':').map(Number);
+                                const [endHour, endMin] = end.split(':').map(Number);
+                                const startTime = startHour * 60 + startMin;
+                                const endTime = endHour * 60 + endMin;
+                                return startTime >= fromTime && endTime <= toTime;
+                            });
+                            const p = document.createElement('p');
+                            p.textContent = `${teacher.name}: ${timeRanges.join(', ')}`;
+                            resultsDiv.appendChild(p);
+                        });
+                    } else {
+                        const p = document.createElement('p');
+                        p.textContent = 'No teachers available for the selected time range.';
+                        resultsDiv.appendChild(p);
                     }
-                    const text = await response.text();
-                    console.log('Fetched data:', text);
-                    const schedule = JSON.parse(text);
-                    console.log('Parsed schedule:', schedule);
-                    return Object.entries(schedule).map(([name, days]) => ({
-                        name,
-                        schedule: days
-                    }));
-                } catch (error) {
-                    console.error('Error loading teachers:', error.message);
-                    return this.fallbackData();
-                }
-            },
-
-            fallbackData() {
-                return [
-                    { name: "Agnes Hellvig", schedule: { Monday: "Check schedule when needed", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } },
-                    { name: "Alan Smith", schedule: { Monday: "-;13:35-14:50", Tuesday: "-;9:20-10:30", Wednesday: "-", Thursday: "-", Friday: "-" } },
-                    { name: "Alex Reid", schedule: { Monday: "-", Tuesday: "9:00-10:00;13:20-", Wednesday: "-", Thursday: "10:55-12:15", Friday: "-" } },
-                    { name: "Alvinda Hall", schedule: { Monday: "9:35-10:45;13:40-14:40", Tuesday: "-", Wednesday: "12:35-14:00", Thursday: "9:00-10:20", Friday: "-" } },
-                    { name: "Alyssa Gestrinius", schedule: { Monday: "10:30-11:30", Tuesday: "-", Wednesday: "-", Thursday: "-", Friday: "-" } }
-                ];
-            },
-
-            isAvailable(teacher) {
-                const day = this.currentDate.toLocaleString('en-US', { weekday: 'long' });
-                const schedule = teacher.schedule[day] || "-";
-                if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
-                const timeRanges = schedule.split(';').filter(range => range !== "-");
-                const now = this.currentDate;
-                const [hour, minute] = [now.getHours(), now.getMinutes()];
-                const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-
-                return timeRanges.some(range => {
-                    const [start, end] = range.split('-');
-                    if (!end || end === "") return false;
-                    const [startHour, startMin] = start.split(':').map(Number);
-                    const [endHour, endMin] = end.split(':').map(Number);
-                    const startTime = startHour * 60 + startMin;
-                    const endTime = endHour * 60 + endMin;
-                    const currentTotalMin = hour * 60 + minute;
-                    return currentTotalMin >= startTime && currentTotalMin <= endTime;
-                });
-            }
-        };
-
-        // UI Module
-        const ui = {
-            init() {
-                this.updateTime();
-                this.setupDarkModeToggle();
-                data.loadFromFile().then(teachers => {
-                    data.teachers = teachers;
-                    console.log('Loaded teachers:', teachers);
-                    this.renderTeachers();
-                    this.renderDropdown();
-                    this.setupSearch();
-                }).catch(error => console.error('Error in init:', error));
-            },
-
-            updateTime() {
-                const timeElement = document.getElementById('availabilityTime');
-                const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'CET', timeZoneName: 'short' };
-                timeElement.textContent = `Available as of ${data.currentDate.toLocaleTimeString('en-US', options)} (showing monthly totals: Week: 2025-W43 / Month: 2025-10)`;
-            },
-
-            setupDarkModeToggle() {
-                const toggle = document.getElementById('dark-mode');
-                toggle.addEventListener('change', () => {
-                    document.body.dataset.theme = toggle.checked ? 'dark' : 'light';
-                    localStorage.setItem('theme', toggle.checked ? 'dark' : 'light');
-                });
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                document.body.dataset.theme = savedTheme;
-                toggle.checked = savedTheme === 'dark';
-            },
-
-            renderTeachers() {
-                const availableDiv = document.getElementById('availableTeachers');
-                availableDiv.innerHTML = '';
-                data.teacherButtons = {};
-                data.teachers.forEach(teacher => {
-                    const btn = document.createElement('button');
-                    btn.textContent = teacher.name;
-                    btn.className = 'teacher-btn';
-                    if (data.isAvailable(teacher)) btn.classList.add('available');
-                    availableDiv.appendChild(btn);
-                    data.teacherButtons[teacher.name] = btn;
-                });
-            },
-
-            renderDropdown() {
-                const select = document.getElementById('extraTeacher');
-                select.innerHTML = '<option value="">-- Select a teacher --</option>';
-                data.teachers.forEach(teacher => {
-                    const option = document.createElement('option');
-                    option.value = teacher.name;
-                    option.textContent = teacher.name;
-                    select.appendChild(option);
-                });
-            },
-
-            setupSearch() {
-                const searchInput = document.getElementById('teacherSearch');
-                searchInput.addEventListener('input', () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    data.teachers.forEach(teacher => {
-                        const btn = data.teacherButtons[teacher.name];
-                        if (btn && teacher.name.toLowerCase().includes(searchTerm)) {
-                            btn.style.display = 'inline-flex';
-                        } else if (btn) {
-                            btn.style.display = 'none';
-                        }
-                    });
-                });
-            },
-
-            handleCheckAvailability() {
-                const date = document.getElementById('checkDate').value;
-                const timeFrom = document.getElementById('timeFrom').value;
-                const timeTo = document.getElementById('timeTo').value;
-                if (date && timeFrom && timeTo) {
-                    const checkDate = new Date(date + 'T' + timeFrom + ':00+02:00');
-                    const day = checkDate.toLocaleString('en-US', { weekday: 'long' });
-                    const available = data.teachers.filter(t => {
-                        const schedule = t.schedule[day] || "-";
-                        if (schedule.includes("Check schedule") || schedule === "-" || schedule.includes("any of his support times")) return false;
-                        const timeRanges = schedule.split(';').filter(range => range !== "-");
-                        const [hour, minute] = [checkDate.getHours(), checkDate.getMinutes()];
-                        const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                        return timeRanges.some(range => {
-                            const [start, end] = range.split('-');
-                            if (!end || end === "") return false;
-                            const [startHour, startMin] = start.split(':').map(Number);
-                            const [endHour, endMin] = end.split(':').map(Number);
-                            const startTime = startHour * 60 + startMin;
-                            const endTime = endHour * 60 + endMin;
-                            const currentTotalMin = hour * 60 + minute;
-                            return currentTotalMin >= startTime && currentTotalMin <= endTime;
-                        });
-                    }).map(t => t.name);
-                    alert(`Available teachers: ${available.join(', ') || 'None'}`);
                 } else {
-                    alert('Please fill all fields.');
+                    resultsDiv.innerHTML = '<p>Please fill all fields.</p>';
                 }
             },
 
