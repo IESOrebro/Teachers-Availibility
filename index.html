@@ -27,10 +27,7 @@
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-gradient),var(--wave-pattern);background-blend-mode:overlay;margin:0;padding:30px;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;transition:background .3s ease}
         .container{max-width:900px;width:100%;background:var(--container-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:20px;padding:30px;box-shadow:0 6px 16px rgba(0,0,0,.15);border:1px solid var(--border-color);max-height:90vh;overflow-y:auto;transition:background .3s ease,border .3s ease,transform .2s ease}
         .container:hover{transform:translateY(-5px)}
-        h1{color:var(--text-color);font-size:36px;margin-bottom:20px;text-align:center;background:linear-gradient(90deg,var(--accent-color),var(--accent-dark));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
-        .global-search{margin-bottom:25px}
-        .global-search input{width:100%;padding:14px;font-size:17px;border:1px solid var(--input-border);border-radius:12px;background:var(--input-bg);box-shadow:inset 0 2px 4px var(--input-shadow);transition:all .2s ease}
-        .global-search input:focus{outline:none;box-shadow:inset 0 2px 6px var(--input-shadow),0 0 0 3px rgba(52,211,153,.3);border-color:var(--accent-dark)}
+        h1{color:var(--text-color);font-size:36px;margin-bottom:30px;text-align:center;background:linear-gradient(90deg,var(--accent-color),var(--accent-dark));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
         .section{margin-bottom:25px;padding:25px;background:var(--section-bg);border-radius:12px;border-left:5px solid var(--accent-color);transition:transform .2s ease,box-shadow .2s ease,background .3s ease}
         .section:hover{transform:translateY(-5px);box-shadow:0 6px 12px var(--shadow-color)}
         .section h2{color:var(--text-color);font-size:24px;margin-bottom:20px;font-weight:600}
@@ -76,13 +73,7 @@
 <div class="container">
     <h1>IES Örebro Teacher Availability Dashboard</h1>
 
-    <!-- NEW: GLOBAL SEARCH -->
-    <div class="global-search">
-        <input type="text" id="globalSearch" placeholder="Search any teacher or support staff to see their full weekly schedule...">
-        <div class="availability-list" id="globalResults" style="margin-top:15px;"></div>
-    </div>
-
-    <!-- TEACHERS -->
+    <!-- TEACHERS: Available Right Now -->
     <div class="section">
         <h2>Available Right Now</h2>
         <p id="availabilityTime"></p>
@@ -91,7 +82,7 @@
         <div class="availability-list" id="availabilityDetails"></div>
     </div>
 
-    <!-- SUPPORT STAFF -->
+    <!-- SUPPORT STAFF: Available Right Now -->
     <div class="section">
         <h2>Support Staff</h2>
         <p id="supportTime"></p>
@@ -100,7 +91,7 @@
         <div class="availability-list" id="supportDetails"></div>
     </div>
 
-    <!-- CHECK AVAILABILITY -->
+    <!-- CHECK AVAILABILITY FOR TIME RANGE -->
     <div class="section">
         <h2>Check Availability for a Time Range</h2>
         <div class="form-group"><label>Date:</label><input type="date" id="checkDate"></div>
@@ -118,7 +109,7 @@
         <div class="availability-list" id="availabilityResults"></div>
     </div>
 
-    <!-- EXTRA MINUTES -->
+    <!-- EXTRA WORKED MINUTES -->
     <div class="section">
         <h2>Extra Worked Minutes</h2>
         <p>This data is stored in your local browser.</p>
@@ -150,7 +141,7 @@
 </div>
 
 <script>
-/* ==================== DATA ==================== */
+/* ==================== DATA MODULE ==================== */
 const data = {
     teachers: [],
     teacherButtons: {},
@@ -178,18 +169,33 @@ const data = {
     fallbackData(){
         return [
             // SUPPORT STAFF
-            {name:"Agnes Hellvig",role:"support",schedule:{Monday:"08:00-11:35;13:10-14:10",Tuesday:"-",Wednesday:"-",Thursday:"08:15-09:15;09:25-10:25",Friday:"-"}},
-            {name:"Angelica Norgren",role:"support",schedule:{Monday:"-",Tuesday:"08:15-11:25;12:30-13:55",Wednesday:"08:15-09:15;10:35-12:00;13:05-14:30",Thursday:"08:15-10:35",Friday:"08:15-11:00"}},
-            {name:"Garret Cooke",role:"support",schedule:{Monday:"08:00-09:50;10:15-10:50;12:25-12:50",Tuesday:"08:00-09:15;09:50-10:30;12:40-13:30",Wednesday:"08:00-09:15;09:45-10:15;12:30-13:30",Thursday:"08:00-09:15;09:45-10:30;12:30-14:00",Friday:"08:00-09:15;09:45-10:55"}},
-            {name:"Wynonah Plattner",role:"support",schedule:{Monday:"Check her schedule",Tuesday:"-",Wednesday:"-",Thursday:"-",Friday:"-"}},
-            {name:"Vicenta Marie Linden",role:"support",schedule:{Monday:"12:35-14:20",Tuesday:"08:30-11:15;12:25-13:20",Wednesday:"-",Thursday:"-",Friday:"09:50-11:00;12:30-14:15"}},
+            {name:"Agnes Hellvig",role:"support",schedule:{
+                Monday:"08:00-11:35;13:10-14:10",Tuesday:"-",Wednesday:"-",Thursday:"08:15-09:15;09:25-10:25",Friday:"-"
+            }},
+            {name:"Angelica Norgren",role:"support",schedule:{
+                Monday:"-",Tuesday:"08:15-11:25;12:30-13:55",Wednesday:"08:15-09:15;10:35-12:00;13:05-14:30",
+                Thursday:"08:15-10:35",Friday:"08:15-11:00"
+            }},
+            {name:"Garret Cooke",role:"support",schedule:{
+                Monday:"08:00-09:50;10:15-10:50;12:25-12:50",
+                Tuesday:"08:00-09:15;09:50-10:30;12:40-13:30",
+                Wednesday:"08:00-09:15;09:45-10:15;12:30-13:30",
+                Thursday:"08:00-09:15;09:45-10:30;12:30-14:00",
+                Friday:"08:00-09:15;09:45-10:55"
+            }},
+            {name:"Wynonah Plattner",role:"support",schedule:{
+                Monday:"Check her schedule",Tuesday:"-",Wednesday:"-",Thursday:"-",Friday:"-"
+            }},
+            {name:"Vicenta Marie Linden",role:"support",schedule:{
+                Monday:"12:35-14:20",Tuesday:"08:30-11:15;12:25-13:20",Wednesday:"-",Thursday:"-",Friday:"09:50-11:00;12:30-14:15"
+            }},
 
-            // TEACHERS (unchanged)
+            // ALL OTHER TEACHERS (unchanged)
             {name:"Alan Smith",role:"teacher",schedule:{Monday:"-;13:35-14:50",Tuesday:"-;09:20-10:30",Wednesday:"-",Thursday:"-",Friday:"-"}},
             {name:"Alex Reid",role:"teacher",schedule:{Monday:"-",Tuesday:"09:00-10:00;13:20-23:59",Wednesday:"-",Thursday:"10:55-12:15",Friday:"-"}},
             {name:"Alvinda Hall",role:"teacher",schedule:{Monday:"09:35-10:45;13:40-14:40",Tuesday:"-",Wednesday:"12:35-14:00",Thursday:"09:00-10:20",Friday:"-"}},
             {name:"Alyssa Gestrinius",role:"teacher",schedule:{Monday:"10:30-11:30",Tuesday:"-",Wednesday:"-",Thursday:"-",Friday:"-"}},
-            {name:"Amanda Bergström",role:"teacher",schedule:{Monday:"-;14:45-16:00",Tuesday:"-",Wednesday:"-;12:50-14:30  ",Thursday:"-",Friday:"-"}},
+            {name:"Amanda Bergström",role:"teacher",schedule:{Monday:"-;14:45-16:00",Tuesday:"-",Wednesday:"-;12:50-14:30",Thursday:"-",Friday:"-"}},
             {name:"Amra Zaklan",role:"teacher",schedule:{Monday:"-",Tuesday:"10:15-11:25",Wednesday:"-",Thursday:"-",Friday:"-"}},
             {name:"Ann-Sofie Nordbrandt",role:"teacher",schedule:{Monday:"09:55-10:55",Tuesday:"-;13:05-15:00",Wednesday:"10:30-11:45",Thursday:"-",Friday:"-"}},
             {name:"Anna Svensson",role:"teacher",schedule:{Monday:"09:50-12:10",Tuesday:"08:00-10:55",Wednesday:"08:00-09:50",Thursday:"09:45-10:55",Friday:"-"}},
@@ -252,7 +258,7 @@ const data = {
         return {available:ok,ranges:shown};
     },
 
-    getWeeklySchedule(person){
+    getWeeklySchedule(person,startOfWeek){
         const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];
         const out={};
         days.forEach(d=>{
@@ -264,7 +270,7 @@ const data = {
     }
 };
 
-/* ==================== UI ==================== */
+/* ==================== UI MODULE ==================== */
 const ui = {
     init(){
         this.updateTimes();
@@ -276,7 +282,6 @@ const ui = {
             this.setupSearches();
             this.setupClicks();
             this.setupTimeZone();
-            this.setupGlobalSearch();
         });
     },
 
@@ -365,22 +370,20 @@ const ui = {
     },
 
     setupClicks(){
-        document.querySelectorAll('#availableTeachers .teacher-btn').forEach(b=>b.onclick=()=>this.showFullWeek(b.dataset.name,'availabilityDetails'));
-        document.querySelectorAll('#availableSupport .teacher-btn').forEach(b=>b.onclick=()=>this.showFullWeek(b.dataset.name,'supportDetails'));
+        document.querySelectorAll('#availableTeachers .teacher-btn').forEach(b=>b.onclick=()=>this.showWeek(b.dataset.name,'availabilityDetails'));
+        document.querySelectorAll('#availableSupport .teacher-btn').forEach(b=>b.onclick=()=>this.showWeek(b.dataset.name,'supportDetails'));
     },
 
-    /* ==== SHOW FULL WEEK (Monday-Friday) ==== */
-    showFullWeek(name,targetId){
+    showWeek(name,targetId){
         const div = document.getElementById(targetId);
         div.innerHTML='';
         const person = data.teachers.find(p=>p.name===name);
         if(!person) return;
-
-        const week = data.getWeeklySchedule(person);
+        const start = this.startOfWeek(new Date());
+        const week = data.getWeeklySchedule(person,start);
         const title=document.createElement('p');
-        title.textContent=`${name}'s Full Weekly Availability`;
+        title.textContent=`${name}'s Availability (Week ${this.weekNum(start)})`;
         title.style.fontWeight='600'; div.appendChild(title);
-
         ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(d=>{
             const p=document.createElement('p');
             p.textContent=`${d}: ${week[d]||'-'}`; div.appendChild(p);
@@ -392,49 +395,22 @@ const ui = {
         return h*60+m;
     },
 
-    /* ==== NEW: GLOBAL SEARCH ==== */
-    setupGlobalSearch(){
-        const input = document.getElementById('globalSearch');
-        const results = document.getElementById('globalResults');
-        input.addEventListener('input', () => {
-            const term = input.value.trim().toLowerCase();
-            results.innerHTML = '';
-            if (!term) return;
-
-            const matches = data.teachers.filter(p => p.name.toLowerCase().includes(term));
-            if (!matches.length) {
-                results.innerHTML = '<p>No one found.</p>';
-                return;
-            }
-
-            matches.forEach(person => {
-                const week = data.getWeeklySchedule(person);
-                const block = document.createElement('div');
-                block.style.marginBottom = '20px';
-                block.style.padding = '12px';
-                block.style.background = 'rgba(240,250,255,0.9)';
-                block.style.borderRadius = '8px';
-                block.style.borderLeft = '4px solid var(--accent-color)';
-
-                const title = document.createElement('p');
-                title.textContent = `${person.name}'s Weekly Schedule`;
-                title.style.fontWeight = '600';
-                title.style.margin = '0 0 8px 0';
-                block.appendChild(title);
-
-                ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(d => {
-                    const p = document.createElement('p');
-                    p.textContent = `${d}: ${week[d] || '-'}`;
-                    p.style.margin = '4px 0';
-                    p.style.fontSize = '15px';
-                    block.appendChild(p);
-                });
-
-                results.appendChild(block);
-            });
-        });
+    startOfWeek(d){
+        const day = d.getDay();
+        const diff = day===0?6:day-1;
+        const mon = new Date(d); mon994.setDate(d.getDate()-diff);
+        mon.setHours(0,0,0,0); return mon;
     },
 
+    weekNum(date){
+        const d = new Date(date);
+        d.setHours(0,0,0,0);
+        d.setDate(d.getDate()+3-(d.getDay()+6)%7);
+        const week1 = new Date(d.getFullYear(),0,4);
+        return Math.round(((d-week1)/86400000+1)/7);
+    },
+
+    // FIXED: Overlap-based availability check
     handleCheckAvailability(){
         const date = document.getElementById('checkDate').value;
         const from = document.getElementById('timeFrom').value;
