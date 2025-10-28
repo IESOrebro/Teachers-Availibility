@@ -56,6 +56,8 @@
         p{font-size:16px;color:var(--text-color);margin:8px 0;text-align:center}
         .availability-list{margin-top:20px;padding:15px;background:rgba(255,255,255,.95);border-radius:10px;border-left:5px solid var(--accent-color);max-height:220px;overflow-y:auto}
         .availability-list p{margin:8px 0;font-size:16px}
+        .schedule-block{margin-bottom:20px;padding:12px;background:rgba(240,250,255,0.95);border-radius:8px;border-left:4px solid var(--accent-color);font-size:15px}
+        .schedule-block strong{font-weight:600;color:var(--accent-dark)}
         @media (max-width:600px){
             .container{padding:20px;border-radius:15px}
             .section{padding:20px}
@@ -73,25 +75,25 @@
 <div class="container">
     <h1>IES Örebro Teacher Availability Dashboard</h1>
 
-    <!-- TEACHERS: Available Right Now -->
+    <!-- TEACHERS -->
     <div class="section">
         <h2>Available Right Now</h2>
         <p id="availabilityTime"></p>
-        <input type="text" class="search-bar" id="teacherSearch" placeholder="Search teachers...">
+        <input type="text" class="search-bar" id="teacherSearch" placeholder="Search any teacher to see full weekly schedule...">
         <div class="teachers" id="availableTeachers"></div>
-        <div class="availability-list" id="availabilityDetails"></div>
+        <div class="availability-list" id="teacherResults"></div>
     </div>
 
-    <!-- SUPPORT STAFF: Available Right Now -->
+    <!-- SUPPORT STAFF -->
     <div class="section">
         <h2>Support Staff</h2>
         <p id="supportTime"></p>
-        <input type="text" class="search-bar" id="supportSearch" placeholder="Search support staff...">
+        <input type="text" class="search-bar" id="supportSearch" placeholder="Search any support staff to see full weekly schedule...">
         <div class="teachers" id="availableSupport"></div>
-        <div class="availability-list" id="supportDetails"></div>
+        <div class="availability-list" id="supportResults"></div>
     </div>
 
-    <!-- CHECK AVAILABILITY FOR TIME RANGE -->
+    <!-- CHECK AVAILABILITY -->
     <div class="section">
         <h2>Check Availability for a Time Range</h2>
         <div class="form-group"><label>Date:</label><input type="date" id="checkDate"></div>
@@ -109,7 +111,7 @@
         <div class="availability-list" id="availabilityResults"></div>
     </div>
 
-    <!-- EXTRA WORKED MINUTES -->
+    <!-- EXTRA MINUTES -->
     <div class="section">
         <h2>Extra Worked Minutes</h2>
         <p>This data is stored in your local browser.</p>
@@ -141,11 +143,9 @@
 </div>
 
 <script>
-/* ==================== DATA MODULE ==================== */
+/* ==================== DATA ==================== */
 const data = {
     teachers: [],
-    teacherButtons: {},
-    supportButtons: {},
     timeZone: 'Europe/Paris',
 
     async loadFromFile(){
@@ -168,29 +168,11 @@ const data = {
 
     fallbackData(){
         return [
-            // SUPPORT STAFF
-            {name:"Agnes Hellvig",role:"support",schedule:{
-                Monday:"08:00-11:35;13:10-14:10",Tuesday:"-",Wednesday:"-",Thursday:"08:15-09:15;09:25-10:25",Friday:"-"
-            }},
-            {name:"Angelica Norgren",role:"support",schedule:{
-                Monday:"-",Tuesday:"08:15-11:25;12:30-13:55",Wednesday:"08:15-09:15;10:35-12:00;13:05-14:30",
-                Thursday:"08:15-10:35",Friday:"08:15-11:00"
-            }},
-            {name:"Garret Cooke",role:"support",schedule:{
-                Monday:"08:00-09:50;10:15-10:50;12:25-12:50",
-                Tuesday:"08:00-09:15;09:50-10:30;12:40-13:30",
-                Wednesday:"08:00-09:15;09:45-10:15;12:30-13:30",
-                Thursday:"08:00-09:15;09:45-10:30;12:30-14:00",
-                Friday:"08:00-09:15;09:45-10:55"
-            }},
-            {name:"Wynonah Plattner",role:"support",schedule:{
-                Monday:"Check her schedule",Tuesday:"-",Wednesday:"-",Thursday:"-",Friday:"-"
-            }},
-            {name:"Vicenta Marie Linden",role:"support",schedule:{
-                Monday:"12:35-14:20",Tuesday:"08:30-11:15;12:25-13:20",Wednesday:"-",Thursday:"-",Friday:"09:50-11:00;12:30-14:15"
-            }},
-
-            // ALL OTHER TEACHERS (unchanged)
+            {name:"Agnes Hellvig",role:"support",schedule:{Monday:"08:00-11:35;13:10-14:10",Tuesday:"-",Wednesday:"-",Thursday:"08:15-09:15;09:25-10:25",Friday:"-"}},
+            {name:"Angelica Norgren",role:"support",schedule:{Monday:"-",Tuesday:"08:15-11:25;12:30-13:55",Wednesday:"08:15-09:15;10:35-12:00;13:05-14:30",Thursday:"08:15-10:35",Friday:"08:15-11:00"}},
+            {name:"Garret Cooke",role:"support",schedule:{Monday:"08:00-09:50;10:15-10:50;12:25-12:50",Tuesday:"08:00-09:15;09:50-10:30;12:40-13:30",Wednesday:"08:00-09:15;09:45-10:15;12:30-13:30",Thursday:"08:00-09:15;09:45-10:30;12:30-14:00",Friday:"08:00-09:15;09:45-10:55"}},
+            {name:"Wynonah Plattner",role:"support",schedule:{Monday:"Check her schedule",Tuesday:"-",Wednesday:"-",Thursday:"-",Friday:"-"}},
+            {name:"Vicenta Marie Linden",role:"support",schedule:{Monday:"12:35-14:20",Tuesday:"08:30-11:15;12:25-13:20",Wednesday:"-",Thursday:"-",Friday:"09:50-11:00;12:30-14:15"}},
             {name:"Alan Smith",role:"teacher",schedule:{Monday:"-;13:35-14:50",Tuesday:"-;09:20-10:30",Wednesday:"-",Thursday:"-",Friday:"-"}},
             {name:"Alex Reid",role:"teacher",schedule:{Monday:"-",Tuesday:"09:00-10:00;13:20-23:59",Wednesday:"-",Thursday:"10:55-12:15",Friday:"-"}},
             {name:"Alvinda Hall",role:"teacher",schedule:{Monday:"09:35-10:45;13:40-14:40",Tuesday:"-",Wednesday:"12:35-14:00",Thursday:"09:00-10:20",Friday:"-"}},
@@ -234,272 +216,230 @@ const data = {
         ];
     },
 
-    isAvailable(person, date, fromMin, toMin){
-        const day = date.toLocaleString('en-US',{weekday:'long',timeZone:data.timeZone});
-        const sched = person.schedule[day] || "-";
-        if(sched.includes('Check')||sched==='-'||sched.includes('any')) return {available:false,ranges:[]};
-        const ranges = sched.split(';').filter(r=>r!=='-');
-        const ok = ranges.some(r=>{
-            let [s,e]=r.split('-');
-            if(!e) e='23:59';
-            [s,e]=[s.padStart(5,'0'),e.padStart(5,'0')];
-            const sm=(+s.split(':')[0])*60 + +s.split(':')[1];
-            const em=(+e.split(':')[0])*60 + +e.split(':')[1];
-            return sm <= toMin && em >= fromMin;
-        });
-        const shown = ok ? ranges.filter(r=>{
-            let [s,e]=r.split('-');
-            if(!e) e='23:59';
-            [s,e]=[s.padStart(5,'0'),e.padStart(5,'0')];
-            const sm=(+s.split(':')[0])*60 + +s.split(':')[1];
-            const em=(+e.split(':')[0])*60 + +e.split(':')[1];
-            return sm <= toMin && em >= fromMin;
-        }).map(r=>r.split('-').map(t=>t.padStart(5,'0')).join('-')) : [];
-        return {available:ok,ranges:shown};
-    },
-
-    getWeeklySchedule(person,startOfWeek){
-        const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];
-        const out={};
-        days.forEach(d=>{
-            const raw = person.schedule[d]||'-';
-            if(raw.includes('Check')||raw.includes('any')) out[d]='Check schedule';
-            else out[d]= raw==='-' ? '-' : raw.split(';').filter(r=>r!=='-').join(', ');
+    getWeeklySchedule(person){
+        const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+        const out = {};
+        days.forEach(d => {
+            const raw = person.schedule[d] || '-';
+            if (raw.includes('Check') || raw.includes('any')) out[d] = 'Check schedule';
+            else out[d] = raw === '-' ? '-' : raw.split(';').filter(r => r !== '-').join(', ');
         });
         return out;
     }
 };
 
-/* ==================== UI MODULE ==================== */
+/* ==================== UI ==================== */
 const ui = {
     init(){
         this.updateTimes();
-        data.loadFromFile().then(list=>{
+        data.loadFromFile().then(list => {
             data.teachers = list;
-            this.renderTeachers();
-            this.renderSupport();
+            this.renderAvailableNow();
             this.fillDropdown();
-            this.setupSearches();
-            this.setupClicks();
+            this.setupSearchBars();
             this.setupTimeZone();
         });
     },
 
     updateTimes(){
-        const opts={hour:'2-digit',minute:'2-digit',hour12:false,timeZone:data.timeZone,timeZoneName:'short'};
+        const opts = {hour:'2-digit',minute:'2-digit',hour12:false,timeZone:data.timeZone,timeZoneName:'short'};
         const str = `Available as of ${new Date().toLocaleTimeString('en-US',opts)} (Week 2025-W43 / Oct 2025)`;
         document.getElementById('availabilityTime').textContent = str;
         document.getElementById('supportTime').textContent = str;
     },
 
-    renderTeachers(){
-        const div = document.getElementById('availableTeachers');
-        div.innerHTML=''; data.teacherButtons={};
+    renderAvailableNow(){
+        this.renderSection('teacher');
+        this.renderSection('support');
+    },
+
+    renderSection(role){
+        const container = document.getElementById(role === 'teacher' ? 'availableTeachers' : 'availableSupport');
+        container.innerHTML = '';
         const now = new Date();
-        const cur = this.minFromDate(now);
-        const avail = data.teachers.filter(p=>p.role==='teacher' && data.isAvailable(p,now,cur,cur).available);
-        if(!avail.length){
-            div.innerHTML='<p>No teachers available right now.</p>';
-            return;
+        const curMin = this.getCurrentMinutes(now);
+        const available = data.teachers.filter(p => p.role === role && this.isAvailableNow(p, now, curMin));
+        available.forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'teacher-btn available';
+            btn.textContent = p.name;
+            btn.onclick = () => this.showFullSchedule(p.name, role === 'teacher' ? 'teacherResults' : 'supportResults');
+            container.appendChild(btn);
+        });
+        if (!available.length) {
+            container.innerHTML = `<p>No ${role}s available right now.</p>`;
         }
-        avail.forEach(p=>{
-            const b = document.createElement('button');
-            b.textContent=p.name; b.className='teacher-btn available';
-            b.dataset.name=p.name; div.appendChild(b);
-            data.teacherButtons[p.name]=b;
+    },
+
+    isAvailableNow(person, date, curMin){
+        const day = date.toLocaleString('en-US', {weekday:'long', timeZone:data.timeZone});
+        const sched = person.schedule[day] || "-";
+        if (sched.includes('Check') || sched === '-' || sched.includes('any')) return false;
+        return sched.split(';').some(r => {
+            if (r === '-' || !r) return false;
+            let [s, e] = r.split('-');
+            if (!e) e = '23:59';
+            [s, e] = [s.padStart(5,'0'), e.padStart(5,'0')];
+            const sm = (+s.split(':')[0])*60 + +s.split(':')[1];
+            const em = (+e.split(':')[0])*60 + +e.split(':')[1];
+            return sm <= curMin && em >= curMin;
         });
     },
 
-    renderSupport(){
-        const div = document.getElementById('availableSupport');
-        div.innerHTML=''; data.supportButtons={};
-        const now = new Date();
-        const cur = this.minFromDate(now);
-        const avail = data.teachers.filter(p=>p.role==='support' && data.isAvailable(p,now,cur,cur).available);
-        if(!avail.length){
-            div.innerHTML='<p>No support staff available right now.</p>';
-            return;
-        }
-        avail.forEach(p=>{
-            const b = document.createElement('button');
-            b.textContent=p.name; b.className='teacher-btn available';
-            b.dataset.name=p.name; div.appendChild(b);
-            data.supportButtons[p.name]=b;
-        });
+    getCurrentMinutes(date){
+        const [h,m] = date.toLocaleString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:data.timeZone}).split(':').map(Number);
+        return h*60 + m;
     },
 
     fillDropdown(){
         const sel = document.getElementById('extraTeacher');
-        sel.innerHTML='<option value="">-- Select --</option>';
-        data.teachers.forEach(p=>{
-            const o=document.createElement('option');
-            o.value=p.name; o.textContent=p.name; sel.appendChild(o);
+        sel.innerHTML = '<option value="">-- Select --</option>';
+        data.teachers.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.name; opt.textContent = p.name; sel.appendChild(opt);
         });
     },
 
-    setupSearches(){
-        const ts = document.getElementById('teacherSearch');
-        ts.addEventListener('input',()=>this.filterList('teacher'));
-        ts.addEventListener('click',()=>document.getElementById('availabilityDetails').innerHTML='');
+    setupSearchBars(){
+        const teacherInput = document.getElementById('teacherSearch');
+        const supportInput = document.getElementById('supportSearch');
 
-        const ss = document.getElementById('supportSearch');
-        ss.addEventListener('input',()=>this.filterList('support'));
-        ss.addEventListener('click',()=>document.getElementById('supportDetails').innerHTML='');
+        teacherInput.addEventListener('input', () => this.handleSearch('teacher'));
+        supportInput.addEventListener('input', () => this.handleSearch('support'));
+
+        teacherInput.addEventListener('focus', () => document.getElementById('teacherResults').innerHTML = '');
+        supportInput.addEventListener('focus', () => document.getElementById('supportResults').innerHTML = '');
     },
 
-    filterList(which){
-        const input = document.getElementById(which==='teacher'?'teacherSearch':'supportSearch');
-        const term = input.value.toLowerCase();
-        const now = new Date();
-        const cur = this.minFromDate(now);
-        const list = data.teachers.filter(p=>p.role===which && data.isAvailable(p,now,cur,cur).available && p.name.toLowerCase().includes(term));
-        const div = document.getElementById(which==='teacher'?'availableTeachers':'availableSupport');
-        div.innerHTML=''; const btns = which==='teacher'?data.teacherButtons:data.supportButtons; btns={};
-        if(!list.length){
-            div.innerHTML=`<p>No ${which}s available${term?' matching':''} right now.</p>`;
+    handleSearch(role){
+        const input = document.getElementById(role === 'teacher' ? 'teacherSearch' : 'supportSearch');
+        const term = input.value.trim().toLowerCase();
+        const resultsDiv = document.getElementById(role === 'teacher' ? 'teacherResults' : 'supportResults');
+        resultsDiv.innerHTML = '';
+
+        if (!term) {
+            this.renderAvailableNow();
             return;
         }
-        list.forEach(p=>{
-            const b=document.createElement('button');
-            b.textContent=p.name; b.className='teacher-btn available';
-            b.dataset.name=p.name; div.appendChild(b);
-            btns[p.name]=b;
+
+        const matches = data.teachers.filter(p => p.role === role && p.name.toLowerCase().includes(term));
+        if (matches.length === 0) {
+            resultsDiv.innerHTML = '<p>No one found.</p>';
+            return;
+        }
+
+        matches.forEach(person => {
+            const block = document.createElement('div');
+            block.className = 'schedule-block';
+            block.innerHTML = `<strong>${person.name}'s Weekly Schedule</strong><br>`;
+            const week = data.getWeeklySchedule(person);
+            ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(day => {
+                block.innerHTML += `<div><strong>${day}:</strong> ${week[day] || '-'}</div>`;
+            });
+            resultsDiv.appendChild(block);
         });
-        if(which==='teacher') data.teacherButtons=btns; else data.supportButtons=btns;
-        this.setupClicks();
     },
 
-    setupClicks(){
-        document.querySelectorAll('#availableTeachers .teacher-btn').forEach(b=>b.onclick=()=>this.showWeek(b.dataset.name,'availabilityDetails'));
-        document.querySelectorAll('#availableSupport .teacher-btn').forEach(b=>b.onclick=()=>this.showWeek(b.dataset.name,'supportDetails'));
-    },
-
-    showWeek(name,targetId){
+    showFullSchedule(name, targetId){
         const div = document.getElementById(targetId);
-        div.innerHTML='';
-        const person = data.teachers.find(p=>p.name===name);
-        if(!person) return;
-        const start = this.startOfWeek(new Date());
-        const week = data.getWeeklySchedule(person,start);
-        const title=document.createElement('p');
-        title.textContent=`${name}'s Availability (Week ${this.weekNum(start)})`;
-        title.style.fontWeight='600'; div.appendChild(title);
-        ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(d=>{
-            const p=document.createElement('p');
-            p.textContent=`${d}: ${week[d]||'-'}`; div.appendChild(p);
+        div.innerHTML = '';
+        const person = data.teachers.find(p => p.name === name);
+        if (!person) return;
+
+        const block = document.createElement('div');
+        block.className = 'schedule-block';
+        block.innerHTML = `<strong>${name}'s Weekly Schedule</strong><br>`;
+        const week = data.getWeeklySchedule(person);
+        ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(day => {
+            block.innerHTML += `<div><strong>${day}:</strong> ${week[day] || '-'}</div>`;
         });
+        div.appendChild(block);
     },
 
-    minFromDate(d){
-        const [h,m] = d.toLocaleString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:data.timeZone}).split(':').map(Number);
-        return h*60+m;
-    },
-
-    startOfWeek(d){
-        const day = d.getDay();
-        const diff = day===0?6:day-1;
-        const mon = new Date(d); mon994.setDate(d.getDate()-diff);
-        mon.setHours(0,0,0,0); return mon;
-    },
-
-    weekNum(date){
-        const d = new Date(date);
-        d.setHours(0,0,0,0);
-        d.setDate(d.getDate()+3-(d.getDay()+6)%7);
-        const week1 = new Date(d.getFullYear(),0,4);
-        return Math.round(((d-week1)/86400000+1)/7);
-    },
-
-    // FIXED: Overlap-based availability check
     handleCheckAvailability(){
         const date = document.getElementById('checkDate').value;
         const from = document.getElementById('timeFrom').value;
-        const to   = document.getElementById('timeTo').value;
-        const out  = document.getElementById('availabilityResults');
+        const to = document.getElementById('timeTo').value;
+        const out = document.getElementById('availabilityResults');
 
-        if(!date||!from||!to){
-            out.innerHTML='<p style="color:#b91c1c;">Please fill all fields.</p>';
+        if (!date || !from || !to) {
+            out.innerHTML = '<p style="color:#b91c1c;">Please fill all fields.</p>';
             return;
         }
 
-        const check = new Date(`${date}T${from}:00`);
-        const [fh,fm] = from.split(':').map(Number);
-        const [th,tm] = to.split(':').map(Number);
+        const [fh, fm] = from.split(':').map(Number);
+        const [th, tm] = to.split(':').map(Number);
         const fromMin = fh*60 + fm;
-        const toMin   = th*60 + tm;
+        const toMin = th*60 + tm;
+        const checkDate = new Date(`${date}T${from}:00`);
 
-        out.innerHTML='';
-
-        const matches = data.teachers.filter(p => {
-            const day = check.toLocaleString('en-US', {weekday:'long', timeZone:data.timeZone});
-            const sched = p.schedule[day] || '-';
-            if(sched.includes('Check')||sched==='-'||sched.includes('any')) return false;
-
-            return sched.split(';').some(r => {
-                if(r==='-'||r==='') return false;
-                let [s,e] = r.split('-');
-                if(!e) e='23:59';
-                [s,e] = [s.padStart(5,'0'), e.padStart(5,'0')];
-                const sm = (+s.split(':')[0])*60 + +s.split(':')[1];
-                const em = (+e.split(':')[0])*60 + +e.split(':')[1];
-                return sm <= toMin && em >= fromMin;
-            });
-        });
-
-        if(matches.length===0){
-            out.innerHTML='<p>No one available in that time range.</p>';
+        out.innerHTML = '';
+        const matches = data.teachers.filter(p => this.isAvailableInRange(p, checkDate, fromMin, toMin));
+        if (matches.length === 0) {
+            out.innerHTML = '<p>No one available in that time range.</p>';
             return;
         }
-
         matches.forEach(p => {
-            const day = check.toLocaleString('en-US', {weekday:'long', timeZone:data.timeZone});
+            const day = checkDate.toLocaleString('en-US', {weekday:'long', timeZone:data.timeZone});
             const sched = p.schedule[day];
-            const overlapping = [];
-
-            sched.split(';').forEach(r => {
-                if(r==='-'||r==='') return;
-                let [s,e] = r.split('-');
-                if(!e) e='23:59';
-                [s,e] = [s.padStart(5,'0'), e.padStart(5,'0')];
-                const sm = (+s.split(':')[0])*60 + +s.split(':')[1];
-                const em = (+e.split(':')[0])*60 + +e.split(':')[1];
-                if(sm <= toMin && em >= fromMin){
-                    overlapping.push(`${s}-${e}`);
-                }
-            });
-
+            const overlapping = this.getOverlappingTimes(sched, fromMin, toMin);
             const pEl = document.createElement('p');
             pEl.textContent = `${p.name}: ${overlapping.join(', ')}`;
             out.appendChild(pEl);
         });
     },
 
+    isAvailableInRange(person, date, fromMin, toMin){
+        const day = date.toLocaleString('en-US', {weekday:'long', timeZone:data.timeZone});
+        const sched = person.schedule[day] || '-';
+        if (sched.includes('Check') || sched === '-' || sched.includes('any')) return false;
+        return sched.split(';').some(r => {
+            if (r === '-' || !r) return false;
+            let [s, e] = r.split('-');
+            if (!e) e = '23:59';
+            [s, e] = [s.padStart(5,'0'), e.padStart(5,'0')];
+            const sm = (+s.split(':')[0])*60 + +s.split(':')[1];
+            const em = (+e.split(':')[0])*60 + +e.split(':')[1];
+            return sm <= toMin && em >= fromMin;
+        });
+    },
+
+    getOverlappingTimes(sched, fromMin, toMin){
+        return sched.split(';').filter(r => {
+            if (r === '-' || !r) return false;
+            let [s, e] = r.split('-');
+            if (!e) e = '23:59';
+            [s, e] = [s.padStart(5,'0'), e.padStart(5,'0')];
+            const sm = (+s.split(':')[0])*60 + +s.split(':')[1];
+            const em = (+e.split(':')[0])*60 + +e.split(':')[1];
+            return sm <= toMin && em >= fromMin;
+        }).map(r => r.split('-').map(t => t.padStart(5,'0')).join('-'));
+    },
+
     handleAddEntry(){
         const who = document.getElementById('extraTeacher').value;
         const week = document.getElementById('weekYear').value;
         const mins = document.getElementById('minutes').value;
-        if(!who||!week||!mins){ alert('Fill all fields'); return; }
-        const store = JSON.parse(localStorage.getItem('extraMins')||'[]');
-        store.push({who,week,mins:+mins});
-        localStorage.setItem('extraMins',JSON.stringify(store));
+        if (!who || !week || !mins) { alert('Fill all fields'); return; }
+        const store = JSON.parse(localStorage.getItem('extraMins') || '[]');
+        store.push({who, week, mins: +mins});
+        localStorage.setItem('extraMins', JSON.stringify(store));
         alert('Added');
-        document.getElementById('extraTeacher').value='';
-        document.getElementById('weekYear').value='';
-        document.getElementById('minutes').value='';
+        document.getElementById('extraTeacher').value = '';
+        document.getElementById('weekYear').value = '';
+        document.getElementById('minutes').value = '';
     },
 
     setupTimeZone(){
-        document.getElementById('timeZone').addEventListener('change',e=>{
+        document.getElementById('timeZone').addEventListener('change', e => {
             data.timeZone = e.target.value;
             ui.updateTimes();
-            ui.renderTeachers();
-            ui.renderSupport();
-            ui.setupClicks();
+            ui.renderAvailableNow();
         });
     }
 };
 
-document.addEventListener('DOMContentLoaded',()=>ui.init());
+document.addEventListener('DOMContentLoaded', () => ui.init());
 </script>
 </body>
 </html>
